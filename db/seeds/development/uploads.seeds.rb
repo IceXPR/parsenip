@@ -1,6 +1,6 @@
 
-after 'development:seeds' do
-  user = User.where({email: 'john@example.com'})
+after 'development:users' do
+  user = User.where({email: 'john@example.com'}).first
 
   if Upload.where({user: user}).count == 0
     Upload.create({user: user, file: open(Rails.root.join('csv_test_files', '1.csv'))})
