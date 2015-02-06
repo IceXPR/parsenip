@@ -10,6 +10,7 @@ gem 'therubyracer', platforms: :ruby
 gem 'haml-rails'
 gem 'seedbank'
 gem 'devise'
+gem 'paperclip'
 gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
