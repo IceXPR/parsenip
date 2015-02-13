@@ -28,4 +28,10 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
+
+  def redirect_if_not_logged_in
+    unless current_user
+      redirect_to new_user_session_url
+    end
+  end
 end

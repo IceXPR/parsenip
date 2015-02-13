@@ -1,0 +1,10 @@
+= @user.email
+%table
+  %thead
+    %td Access ID
+    %td Secred Key
+  %tr
+    %td= @user.id
+    %td= @user.secret_key
+%br
+= link_to('Logout', destroy_user_session_path, method: :delete) 
