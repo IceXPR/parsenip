@@ -3,17 +3,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_filter :handle_invalid_request
-
-  def handle_invalid_request
-    if request.xhr? && !api_authenticate
+  def restrict_to_api_users 
+    if !api_authenticate
       render json: {success: false, error: I18n.t('errors.not_permitted')} 
-    end
-  end
-
-  def restrict_to_xhr
-    if !request.xhr?
-      raise "Forbidden" 
     end
   end
 
