@@ -21,7 +21,11 @@ class ApplicationController < ActionController::Base
 
   def api_authenticate
     @user = User.find_by_id(ApiAuth.access_id(request))
-    return ApiAuth.authentic?(request, @user.secret_key) unless @user.nil?
-    false
+    if ApiAuth.authentic?(request, @user.try(:secret_key)) 
+      sign_in @user 
+      return true
+    else
+      return false
+    end
   end
 end
