@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :uploads
 
   root 'dashboard#index'
+  resources :words
   devise_for :users
 
   # Example of regular route:
