@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150206225722) do
+ActiveRecord::Schema.define(version: 20150213220433) do
 
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20150206225722) do
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
+    t.string   "upload_token"
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"
