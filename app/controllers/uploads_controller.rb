@@ -10,4 +10,9 @@ class UploadsController < ApplicationController
     end
   end
 
+  def progress
+    upload = Upload.find_by(upload_token: params[:upload_token])
+    render json: {progress: "#{upload.progress}"}
+  end
+
 end
