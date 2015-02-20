@@ -3,4 +3,8 @@ class WordsController < ApplicationController
   def index
     render json: {success: true, word: "The Bird"}
   end
+
+  def create
+    params[:file]
+  end
 end
