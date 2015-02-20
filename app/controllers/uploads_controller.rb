@@ -3,6 +3,7 @@ class UploadsController < ApplicationController
 
 
   def create
+    puts params
     upload = Upload.new
     upload.file = params['file']
     if upload.save
@@ -11,8 +12,14 @@ class UploadsController < ApplicationController
   end
 
   def progress
-    upload = Upload.find_by(upload_token: params[:upload_token])
-    render json: {progress: "#{upload.progress}"}
+    puts params
+    if params['upload_token']
+      upload = Upload.find_by(upload_token: params['upload_token'])
+      render json: {progress: "#{upload.percent_complete}"}
+    else
+      render json: {error: 'Upload Token Required'}
+    end
+
   end
 
 end

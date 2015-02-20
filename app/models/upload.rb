@@ -8,7 +8,7 @@ class Upload < ActiveRecord::Base
   do_not_validate_attachment_file_type :file
 
   def percent_complete
-    1 + Random.rand(101)
+    "#{1 + Random.rand(101)}%"
   end
 
   private
