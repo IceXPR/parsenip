@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
 
   resources :uploads
-  get 'uploads/:upload_token/progress' => 'uploads#progress', as: :upload_progress
+  post 'uploads/progress' => 'uploads#progress', as: :upload_progress
 
   root 'dashboard#index'
   resources :words
