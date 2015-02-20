@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   root 'dashboard#index'
   resources :words
   devise_for :users
+  resources :charges
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
