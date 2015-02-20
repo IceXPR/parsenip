@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150220203803) do
+ActiveRecord::Schema.define(version: 20150220214258) do
 
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
@@ -25,6 +25,17 @@ ActiveRecord::Schema.define(version: 20150220203803) do
     t.float    "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "plans", force: :cascade do |t|
+    t.string   "name"
+    t.string   "stripe_id"
+    t.integer  "price_in_cents"
+    t.string   "description"
+    t.integer  "max_calls_allowed"
+    t.integer  "length_in_days"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "uploads", force: :cascade do |t|
@@ -54,6 +65,7 @@ ActiveRecord::Schema.define(version: 20150220203803) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "secret_key"
+    t.string   "stripe_card_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

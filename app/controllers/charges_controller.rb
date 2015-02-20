@@ -15,7 +15,6 @@ class ChargesController < ApplicationController
       :description => 'Rails Stripe customer',
       :currency    => 'usd'
     )
-    binding.pry
 
     rescue Stripe::CardError => e
       flash[:error] = e.message
