@@ -6,19 +6,19 @@ module Parsenip
         split.each_with_index do |column, index|
 
           if is_first_name(column)
-            @match[:first_name] = index
+            @match[:is_first_name] = index
           end
 
           if is_last_name(column)
-            @match[:last_name] = index
+            @match[:is_last_name] = index
           end
 
           if is_phone(column)
-            @match[:phone] = index
+            @match[:is_phone] = index
           end
 
           if is_email(column)
-            @match[:email] = index
+            @match[:is_email] = index
           end
 
         end
@@ -27,7 +27,13 @@ module Parsenip
       end
 
       def all_matched?
-        @match.values.all?
+        total_matched = 0
+        @match.each_pair do |k, v|
+          if @match[k].values.count > 0
+            total_matched +=1
+          end
+        end
+        total_matched == @match.length
       end
       def is_first_name(column)
         column.downcase.match(/first.*name/)
