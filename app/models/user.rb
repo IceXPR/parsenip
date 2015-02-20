@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   before_create :assign_secret_key
+  has_many :uploads
  
   private
  
