@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150220214258) do
+ActiveRecord::Schema.define(version: 20150220220520) do
 
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
@@ -50,6 +50,18 @@ ActiveRecord::Schema.define(version: 20150220214258) do
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"
+
+  create_table "user_plans", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "plan_id"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "next_charge_date"
+    t.boolean  "active",           default: true
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.datetime "last_charge_date"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

@@ -6,6 +6,11 @@ class User < ActiveRecord::Base
 
   before_create :assign_secret_key
  
+  has_one :user_plan
+  has_one :plan, through: :user_plan
+  
+  has_many :uploads
+
   private
  
   def assign_secret_key

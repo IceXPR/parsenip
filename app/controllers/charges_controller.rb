@@ -5,17 +5,14 @@ class ChargesController < ApplicationController
   def create
     @amount = 500
     customer = Stripe::Customer.create(
-      :email => 'example@stripe.com',
-      :card  => params[:stripeToken]
+      :email => params[:stripeEmail],
+      :card  => params[:stripeToken],
+      plan: params[:stripePlan] 
     )
-
-    charge = Stripe::Charge.create(
-      :customer    => customer.id,
-      :amount      => @amount,
-      :description => 'Rails Stripe customer',
-      :currency    => 'usd'
-    )
-
+  
+    plan = Plan.where(stripe_id: params[:stripePlan]).first
+    UserPlan.create plan_id: plan.id, user_id: current_user.id, last_charge_date: Time.now
+    redirect_to new_charge_path
     rescue Stripe::CardError => e
       flash[:error] = e.message
       redirect_to charges_path

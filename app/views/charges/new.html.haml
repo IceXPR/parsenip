@@ -1,8 +1,10 @@
-= form_tag charges_path do
-  %article
-    %label.amount
-      %span Amount: $5.00
-  %script.stripe-button{"data-amount" => "500", 
-                        "data-description" => "A month's subscription", 
-                        "data-key" => Rails.configuration.stripe[:publishable_key], 
-                        :src => "https://checkout.stripe.com/checkout.js"}
+- Plan.all.each do |plan|
+  = form_tag charges_path do
+    = hidden_field_tag :stripePlan, plan.stripe_id
+    %article
+      %label.amount
+        %span= "Amount: #{plan.price_in_cents}"
+    %script.stripe-button{"data-amount" => "#{plan.price_in_cents}", 
+                          "data-description" => "#{plan.description}", 
+                          "data-key" => Rails.configuration.stripe[:publishable_key], 
+                          :src => "https://checkout.stripe.com/checkout.js"}
