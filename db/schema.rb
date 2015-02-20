@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213220433) do
+ActiveRecord::Schema.define(version: 20150220213040) do
 
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 20150213220433) do
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
+
+  add_index "dictionaries", ["value_type_id"], name: "index_dictionaries_on_value_type_id"
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id"
