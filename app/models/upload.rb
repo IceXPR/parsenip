@@ -7,6 +7,9 @@ class Upload < ActiveRecord::Base
   # TODO: we should validate against certain types, but we don't know what they are yet
   do_not_validate_attachment_file_type :file
 
+  def percent_complete
+    1 + Random.rand(101)
+  end
 
   private
 
