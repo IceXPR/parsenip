@@ -3,4 +3,12 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+
+  before_create :assign_secret_key
+ 
+  private
+ 
+  def assign_secret_key
+    self.secret_key = ApiAuth.generate_secret_key
+  end
 end
