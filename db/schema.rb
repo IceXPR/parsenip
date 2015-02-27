@@ -30,8 +30,8 @@ ActiveRecord::Schema.define(version: 20150220213040) do
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
-    t.boolean  "has_header",        default: false
     t.string   "upload_token"
+    t.boolean  "has_header",        default: false
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"
