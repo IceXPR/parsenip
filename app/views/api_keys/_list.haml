@@ -1,0 +1,14 @@
+
+%h2 Javascript API Keys
+= link_to 'New API Key', new_api_key_path
+%table
+  %thead
+    %td Permitted URL
+    %td API Key
+    %td Delete
+  - current_user.api_keys.each do |api_key|
+    %tr
+      %td= api_key.permit_url
+      %td= api_key.key
+      %td
+        = button_to "Delete", api_key, :method => :delete
