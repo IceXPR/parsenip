@@ -1,5 +1,6 @@
 class Upload < ActiveRecord::Base
   belongs_to :user
+  has_many :parse_data, class_name: "ParseData"
   has_attached_file :file
 
   before_create :generate_token
@@ -10,6 +11,10 @@ class Upload < ActiveRecord::Base
   scope :in_plan_range, ->(user_plan){
     where(created_at: user_plan.last_charge_date..Time.now)
   }
+
+  def percent_complete
+    "#{1 + Random.rand(101)}%"
+  end
 
   private
 

@@ -13,12 +13,36 @@
 
 ActiveRecord::Schema.define(version: 20150227203951) do
 
+  create_table "api_keys", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "key"
+    t.string   "permit_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id"
+
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
     t.integer  "value_type_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
+
+  add_index "dictionaries", ["value_type_id"], name: "index_dictionaries_on_value_type_id"
+
+  create_table "parse_data", force: :cascade do |t|
+    t.integer  "upload_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "phone"
+    t.string   "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id"
 
   create_table "payments", force: :cascade do |t|
     t.integer  "user_id"
@@ -43,12 +67,13 @@ ActiveRecord::Schema.define(version: 20150227203951) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
+    t.boolean  "has_header",        default: false
     t.string   "upload_token"
   end
 

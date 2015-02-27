@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_one :plan, through: :user_plan
   
   has_many :uploads
+  has_many :api_keys
 
   private
  
