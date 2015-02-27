@@ -6,7 +6,8 @@ class User < ActiveRecord::Base
 
   before_create :assign_secret_key
   has_many :uploads
- 
+  has_many :api_keys
+
   private
  
   def assign_secret_key
