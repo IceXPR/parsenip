@@ -9,6 +9,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_user
+    if !current_user
+      redirect_to new_user_session_url
+    end
+  end
+
   private
 
   def api_authenticate
