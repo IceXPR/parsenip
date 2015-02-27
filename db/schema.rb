@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150227193644) do
+ActiveRecord::Schema.define(version: 20150227203951) do
 
   create_table "api_keys", force: :cascade do |t|
     t.integer  "user_id"
@@ -44,6 +44,27 @@ ActiveRecord::Schema.define(version: 20150227193644) do
 
   add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id"
 
+  create_table "payments", force: :cascade do |t|
+    t.integer  "user_id"
+    t.float    "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plans", force: :cascade do |t|
+    t.string   "name"
+    t.string   "stripe_id"
+    t.integer  "price_in_cents"
+    t.string   "description"
+    t.integer  "max_calls_allowed"
+    t.integer  "length_in_days"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.boolean  "active",            default: true
+    t.string   "interval"
+    t.integer  "interval_count"
+  end
+
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id"
     t.datetime "created_at",                        null: false
@@ -57,6 +78,19 @@ ActiveRecord::Schema.define(version: 20150227193644) do
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"
+
+  create_table "user_plans", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "plan_id"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "next_charge_date"
+    t.boolean  "active",             default: true
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.datetime "last_charge_date"
+    t.string   "stripe_customer_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

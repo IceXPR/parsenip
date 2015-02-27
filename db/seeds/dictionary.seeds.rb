@@ -1,5 +1,4 @@
 after :value_types do
-  if Dictionary.count == 0
 
     first_names = [{value: "michael"},
                    {value: "jessica"},
@@ -2002,6 +2001,7 @@ after :value_types do
                    {value: "kenyon"},
                    {value: "meranda"}]
 
+  if Dictionary.count == 0
     first_names.each do |first_name_attributes|
       dictionary = Dictionary.where(first_name_attributes).first
       unless dictionary

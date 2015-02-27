@@ -8,6 +8,10 @@ class Upload < ActiveRecord::Base
   # TODO: we should validate against certain types, but we don't know what they are yet
   do_not_validate_attachment_file_type :file
 
+  scope :in_plan_range, ->(user_plan){
+    where(created_at: user_plan.last_charge_date..Time.now)
+  }
+
   def percent_complete
     "#{1 + Random.rand(101)}%"
   end
