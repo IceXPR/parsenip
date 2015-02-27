@@ -1,5 +1,4 @@
 after :value_types do
-  return true if Dictionary.count > 0
   first_names = [{value: "michael"},
   {value: "jessica"},
   {value: "christopher"},
@@ -2001,12 +2000,14 @@ after :value_types do
   {value: "kenyon"},
   {value: "meranda"}]
 
-  first_names.each do |first_name_attributes|
-    dictionary = Dictionary.where(first_name_attributes).first
-    unless dictionary
-      dictionary = Dictionary.new
-      dictionary.value_type_id = ValueType.where(key: 'first_name').first.id
-      dictionary.update_attributes(first_name_attributes)
+  if Dictionary.count == 0
+    first_names.each do |first_name_attributes|
+      dictionary = Dictionary.where(first_name_attributes).first
+      unless dictionary
+        dictionary = Dictionary.new
+        dictionary.value_type_id = ValueType.where(key: 'first_name').first.id
+        dictionary.update_attributes(first_name_attributes)
+      end
     end
   end
 end

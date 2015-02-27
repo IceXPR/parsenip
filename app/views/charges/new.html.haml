@@ -1,0 +1,16 @@
+- if @current_plan 
+  %h3= "Your current plan is #{@current_plan.name}"
+%br  
+%ul
+- Plan.detailed_plans.each do |plan|
+  %li{class: ("selected" if @current_plan == plan)}
+    = form_tag charges_path do
+      = hidden_field_tag :stripePlan, plan.stripe_id
+      %article
+        %label.amount
+          %span= "#{plan.name} | "
+          %span= "Amount: #{plan.price_in_cents}"
+      %script.stripe-button{"data-amount" => "#{plan.price_in_cents}", 
+                            "data-description" => "#{plan.description}", 
+                            "data-key" => Rails.configuration.stripe[:publishable_key], 
+                            :src => "https://checkout.stripe.com/checkout.js"}
