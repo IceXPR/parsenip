@@ -2,13 +2,18 @@ class UploadsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_filter :restrict_to_api_users
 
+  # Eventually we can implement XHR file uploads: http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
 
   def create
     upload = Upload.new
     upload.user = @user
     upload.file = params['file']
     if upload.save
-      render json: {success: 'true', upload_token: "#{upload.upload_token}"}
+      if params['return_url']
+        redirect_to params['return_url'] + "?upload_token=#{upload.upload_token}"
+      else
+        render json: {success: 'true', upload_token: "#{upload.upload_token}"}
+      end
     end
   end
 

@@ -82,6 +82,8 @@ GEM
       warden (~> 1.2.3)
     erubis (2.7.0)
     execjs (2.3.0)
+    formtastic (3.1.3)
+      actionpack (>= 3.2.13)
     foundation-rails (5.5.1.0)
       railties (>= 3.1.0)
       sass (>= 3.3.0, < 3.5)
@@ -238,6 +240,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   devise
+  formtastic
   foundation-rails
   haml-rails
   jbuilder (~> 2.0)

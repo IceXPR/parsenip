@@ -14,6 +14,10 @@ gem 'devise'
 gem 'paperclip'
 gem 'sidekiq' 
 gem 'memoist'
+
+gem 'formtastic'
+
+# Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'

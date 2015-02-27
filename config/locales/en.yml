@@ -1,3 +1,12 @@
 en:
   errors:
     not_permitted: 'You do not have the appropriate credentials to access this route'
+    destroy: "Could not destroy %{model}"
+  success:
+    create: "Successfully created %{model}"
+    destroy: "Successfully destroyed %{model}"
+  activerecord:
+    models:
+      api_key: "API Key"
+
+
