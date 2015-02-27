@@ -15,6 +15,6 @@ class ApiKey < ActiveRecord::Base
   end
 
   def valid_request(request)
-    request.env["HTTP_HOST"] == permit_url
+    request.env["HTTP_ORIGIN"].gsub(/^https?:\/\//, '') == permit_url
   end
 end
