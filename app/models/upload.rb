@@ -1,5 +1,6 @@
 class Upload < ActiveRecord::Base
   belongs_to :user
+  has_many :parse_data, class_name: "ParseData"
   has_attached_file :file
 
   before_create :generate_token

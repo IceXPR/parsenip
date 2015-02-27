@@ -27,7 +27,6 @@ class ColumnMatchService
     Parsenip::Detection::Dictionary.new(file).match.each_pair do |key, h|
       headers[key] = h.max_by{|k,v| v}.first
     end
-    binding.pry
     headers
   end
 
