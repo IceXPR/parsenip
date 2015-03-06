@@ -1,0 +1,53 @@
+@import "foundation_and_overrides";
+@import url(http://fonts.googleapis.com/css?family=Josefin+Sans|Roboto:400,400italic,500,500italic,300italic,700,300,700italic);
+
+form input[type="submit"] {
+  @include button($button-tny) ;
+}
+
+.header{
+  width:100%; 
+  background: #f7f7f7;
+  padding:20px 0;
+}
+
+.logo{
+  font-size: 50px;
+  font-family: 'Josefin Sans', sans-serif;
+  margin-left: 50px;
+}
+
+.container{
+  width: 860px;
+  margin:auto;
+  margin-top:25px;
+}
+
+.flash-outer{
+  width:100%;
+  text-align:center;
+  margin-top:20px;
+  padding:15px;
+  color: white;
+}
+
+.alert{
+  background: #f70000;
+}
+
+.notice{
+  background: #00a53c;
+}
+
+ul.devise_links{
+  margin: 20px auto;
+  display: inline-block;
+  li{
+    float:left;
+    list-style: none;  
+    margin: 0;
+    padding:5px;
+    margin-right: 5px;
+  }
+
+}

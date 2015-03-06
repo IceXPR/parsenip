@@ -5,14 +5,24 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
 
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
-<p class="success"><%= flash[:success] %></p>
-<p class="error"><%= flash[:error] %></p>
-<%= yield %>
+  <%= render partial: 'shared/header' %>
+  <div class="flash-outer notice">
+    fkdjlj
+    <%= notice %>
+  </div>
+  <div class="flash-outer alert">
+    fkdjlj
+    <%= alert %>
+  </div>
+  <p class="success"><%= flash[:success] %></p>
+  <p class="error"><%= flash[:error] %></p>
+  <div class="container">
+    <%= yield %>
+  </div>
 
 </body>
 </html>

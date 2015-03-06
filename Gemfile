@@ -23,8 +23,8 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'api-auth'
-gem 'semantic-ui-sass', github: 'doabit/semantic-ui-sass', branch: 'v1.0beta'
 gem 'pry'
+gem 'foundation-rails'
 
 group :development, :test do
   gem 'byebug'
