@@ -9,6 +9,7 @@ class UploadsController < ApplicationController
     upload.user = @user
     upload.file = params['file']
     if upload.save
+      ParseFile.perform_async(upload.id)
       if params['return_url']
         redirect_to params['return_url'] + "?upload_token=#{upload.upload_token}"
       else

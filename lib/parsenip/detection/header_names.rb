@@ -29,7 +29,7 @@ module Parsenip
       def all_matched?
         total_matched = 0
         @match.each_pair do |k, v|
-          if @match[k].values.count > 0
+          unless @match[k].nil?
             total_matched +=1
           end
         end
