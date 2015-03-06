@@ -5,14 +5,22 @@
   padding: 25px;
   font-family: 'Roboto', sans-serif;
   border: 8px solid #E1D5BA;
-  input[type="submit"], input[type="submit"]:hover{
-    background: initial;
-    color: black;
+  input[type="submit"], input[type="submit"]:hover, input[type="submit"]:active{
+    background: #C13A02;
+    color: white;
     padding: 10px 0;
     font-size: 18px;
-    margin: 0; 
+    margin: 0;
+    width: 350px;
+    position: absolute;
+    z-index: 10;
+    display: inline;
+    margin-left: -33px;
+    margin-top: 12px;
   }
   .devise_links{
+    margin-top: 70px;
+    margin-bottom: 0;
     a, a:hover, a:visited{
       color: #777;
     }
