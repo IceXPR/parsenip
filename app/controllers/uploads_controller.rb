@@ -1,6 +1,7 @@
 class UploadsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_filter :restrict_to_api_users
+  before_filter :allow_cors
 
   # Eventually we can implement XHR file uploads: http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
 

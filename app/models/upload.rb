@@ -12,8 +12,33 @@ class Upload < ActiveRecord::Base
     where(created_at: user_plan.last_charge_date..Time.now)
   }
 
+  def set_halfway_complete
+    update(progress: 50)
+  end
+
+  def complete
+    update(progress: 100)
+  end
+
+  def set_number_of_lines
+    update(lines: File.foreach(file.path).count)
+  end
+
+  # Update the % and divide by 2 to make sure it doesn't surpass 50%
+  def update_progress_from_position(position)
+    position = BigDecimal.new(position)
+    lines = BigDecimal.new(self.lines)
+    update(progress: ((position / lines) * 100) / 2)
+  end
+
+  def update_progress_on_parse_data(position)
+    position = BigDecimal.new(position)
+    lines = BigDecimal.new(self.lines)
+    update(progress: (((position / lines) * 100) / 2) + 50)
+  end
+
   def percent_complete
-    "#{1 + Random.rand(101)}%"
+    "#{progress}%"
   end
 
   private

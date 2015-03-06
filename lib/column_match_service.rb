@@ -1,9 +1,9 @@
 
 class ColumnMatchService
-  attr_accessor :file
+  attr_accessor :upload
   attr_accessor :options
-  def initialize(file, options = {})
-    @file = file
+  def initialize(upload, options = {})
+    @upload = upload
   end
 
   def detect
@@ -12,6 +12,10 @@ class ColumnMatchService
     rescue Parsenip::Detection::UnmatchedColumnException => e
       return detect_by_dictionary
     end
+  end
+
+  def file
+    @upload.file
   end
 
   def header_row
@@ -24,7 +28,7 @@ class ColumnMatchService
 
   def detect_by_dictionary
     headers = {}
-    Parsenip::Detection::Dictionary.new(file).match.each_pair do |key, h|
+    Parsenip::Detection::Dictionary.new(@upload).match.each_pair do |key, h|
       headers[key] = h.max_by{|k,v| v}.first
     end
     headers
