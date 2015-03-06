@@ -5,11 +5,11 @@ module Parsenip
       def initialize(row)
         @row = row
         @match = {
-            is_first_name: {},
-            is_last_name: {},
-            is_full_name: {},
-            is_phone: {},
-            is_email: {},
+            is_first_name: nil,
+            is_last_name: nil,
+            is_full_name: nil,
+            is_phone: nil,
+            is_email: nil,
         }
       end
       def split

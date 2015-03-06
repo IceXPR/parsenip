@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150227203951) do
+ActiveRecord::Schema.define(version: 20150306194703) do
 
   create_table "api_keys", force: :cascade do |t|
     t.integer  "user_id"
@@ -75,6 +75,8 @@ ActiveRecord::Schema.define(version: 20150227203951) do
     t.datetime "file_updated_at"
     t.boolean  "has_header",        default: false
     t.string   "upload_token"
+    t.integer  "progress"
+    t.integer  "lines"
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"

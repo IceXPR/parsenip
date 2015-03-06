@@ -7,7 +7,12 @@ class DataGrabberService
   end
 
   def start
-    SmarterCSV.process(@upload.file.path, {chunk_size: 300, remove_empty_values: false}) do |chunk|
+    # Make sure the progress indicates 50% at this point
+    @upload.set_halfway_complete
+
+    chunk_size = 250
+    position = 0
+    SmarterCSV.process(@upload.file.path, {chunk_size: chunk_size, remove_empty_values: false}) do |chunk|
       chunk.each do |hash|
         parsed = @upload.parse_data.new
         @headers.each do |type, col|
@@ -21,9 +26,11 @@ class DataGrabberService
           else
             parsed[model_column] = hash[col]
           end
+          position += 1
         end
         parsed.save
       end
+      @upload.update_progress_on_parse_data(position)
     end
   end
 end
