@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   resources :api_keys
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -9,6 +11,7 @@ Rails.application.routes.draw do
   #get 'uploads/upload' => 'uploads#upload', as: :upload_upload
   match 'uploads/upload' => 'uploads#upload', as: :upload_upload, via: [:get, :post, :options]
   get 'uploads/progress' => 'uploads#progress', as: :upload_progress
+  get 'uploads/data' => 'uploads#data', as: :upload_data
   resources :uploads
 
   root 'dashboard#index'

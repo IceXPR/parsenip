@@ -17,7 +17,7 @@ class Upload < ActiveRecord::Base
   end
 
   def complete!
-    update(complete: true)
+    update(complete: true, progress: 100)
   end
 
   def set_number_of_lines
@@ -38,7 +38,8 @@ class Upload < ActiveRecord::Base
   end
 
   def percent_complete
-    "#{progress}%"
+    progress_percent = progress ? progress : 0
+    "#{progress_percent}%"
   end
 
   private

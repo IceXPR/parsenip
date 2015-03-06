@@ -17,6 +17,12 @@ gem 'memoist'
 
 gem 'formtastic'
 
+group :development do
+  # for sidekiq web
+  # if you require 'sinatra' you get the DSL extended to Object
+  gem 'sinatra', :require => nil
+end
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'turbolinks'
