@@ -14,6 +14,6 @@ class ParseFile
     headers = ColumnMatchService.new(upload.reload).detect
     puts "Detected headers: #{headers.inspect}"
     DataGrabberService.new(headers, upload).start
-    upload.complete
+    upload.complete!
   end
 end

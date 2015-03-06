@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
 
+  #get 'uploads/upload' => 'uploads#upload', as: :upload_upload
+  match 'uploads/upload' => 'uploads#upload', as: :upload_upload, via: [:get, :post, :options]
   get 'uploads/progress' => 'uploads#progress', as: :upload_progress
   resources :uploads
 

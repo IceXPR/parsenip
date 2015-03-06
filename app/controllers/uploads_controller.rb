@@ -5,6 +5,16 @@ class UploadsController < ApplicationController
 
   # Eventually we can implement XHR file uploads: http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
 
+  def upload
+    upload = Upload.new
+    upload.user = @user
+    upload.file = params['file']
+    if upload.save
+      ParseFile.perform_async(upload.id)
+      render json: {success: 'true', upload_token: "#{upload.upload_token}"}
+    end
+  end
+
   def create
     upload = Upload.new
     upload.user = @user
@@ -30,6 +40,10 @@ class UploadsController < ApplicationController
     else
       render json: {error: 'Upload Token Required'}
     end
+
+  end
+
+  def data
 
   end
 

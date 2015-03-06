@@ -16,8 +16,8 @@ class Upload < ActiveRecord::Base
     update(progress: 50)
   end
 
-  def complete
-    update(progress: 100)
+  def complete!
+    update(complete: true)
   end
 
   def set_number_of_lines
