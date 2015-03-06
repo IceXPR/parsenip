@@ -11,15 +11,23 @@
 
   <%= render partial: 'shared/header' %>
   <div class="flash-outer notice">
-    fkdjlj
     <%= notice %>
   </div>
   <div class="flash-outer alert">
-    fkdjlj
     <%= alert %>
   </div>
-  <p class="success"><%= flash[:success] %></p>
-  <p class="error"><%= flash[:error] %></p>
+  <div class="flash-outer notice">
+    <%= flash[:success] %>
+  </div>
+  <div class="flash-outer alert">
+    <%= flash[:error] %>
+  </div>
+
+  <div id="new-api-key" class="modal">
+    <%= render partial: 'api_keys/form' %>
+  </div>
+  <div class="modal-shadow"></div>
+
   <div class="container">
     <%= yield %>
   </div>

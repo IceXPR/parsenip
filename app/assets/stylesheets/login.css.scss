@@ -3,7 +3,19 @@
   margin: auto;
   margin-top: 50px;
   padding: 25px;
-  border: solid 1px #f7f7f7;
-  border-radius: 15px; 
   font-family: 'Roboto', sans-serif;
+  border: 8px solid #E1D5BA;
+  input[type="submit"], input[type="submit"]:hover{
+    background: initial;
+    color: black;
+    padding: 10px 0;
+    font-size: 18px;
+    margin: 0; 
+  }
+  .devise_links{
+    a, a:hover, a:visited{
+      color: #777;
+    }
+  }
 }
+

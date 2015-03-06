@@ -1,3 +1,10 @@
 .header
-  .logo
-    Parsenip
+  .header-left-links
+    .logo
+      Parsenip
+  .header-right-links
+    - if current_user
+      %ul
+        %li= link_to 'New API Key', "#", class: 'modal-launcher', 'data-id' => 'new-api-key'
+        %li= current_user.email
+        %li= link_to('Logout', destroy_user_session_path, method: :delete)

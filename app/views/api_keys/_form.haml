@@ -1,3 +1,4 @@
-= semantic_form_for @api_key do |f|
-  = f.input :permit_url, label: "Application URL"
-  = f.submit
+.error-message
+= form_for ApiKey.new do |f|
+  = f.text_field :permit_url, placeholder: "Application URL (e.g. localhost:3000, myspace.com)"
+  = f.submit "Create API Key", class: 'create-api-key'
