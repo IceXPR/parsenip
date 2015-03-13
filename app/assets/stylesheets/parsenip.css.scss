@@ -9,12 +9,16 @@ form input[type="submit"] {
   width:100%; 
   background: #f7f7f7;
   padding:20px 0;
+  display: inline-block;
+  border: 10px solid #C13A02;
 }
 
 .logo{
   font-size: 50px;
   font-family: 'Josefin Sans', sans-serif;
   margin-left: 50px;
+  float: right;
+  color: #C13A02;
 }
 
 .container{
@@ -27,7 +31,7 @@ form input[type="submit"] {
   width:100%;
   text-align:center;
   margin-top:20px;
-  padding:15px;
+  line-height:45px;
   color: white;
 }
 
@@ -50,4 +54,45 @@ ul.devise_links{
     margin-right: 5px;
   }
 
+}
+
+.header-right-links{
+  float: right; 
+  display: inline-block;
+  ul{
+    margin-top: 20px;
+    margin-right: 50px;
+    list-style: none;
+    li{
+      padding-left: 50px;
+      float: left;  
+      font-size: 17px;
+      a, a:hover, a:visited, a:active{
+        color: black;
+        font-size: 17px;
+      }
+    }
+  }
+}
+
+.header-left-links{
+  float: left; 
+}
+
+table{
+  width: 100%;
+  border-spacing: 0;
+  border: 0;
+  border-bottom: 25px solid #E1D5BA;
+  thead{
+    background: #E1D5BA;
+    td{
+      font-weight: 500;
+    }
+  }
+  tbody{
+    td{
+      font-size: 18px;
+    }
+  }
 }

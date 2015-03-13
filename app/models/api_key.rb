@@ -2,7 +2,7 @@ class ApiKey < ActiveRecord::Base
   API_KEY_LENGTH = 32
   belongs_to :user
 
-  validates :permit_url, presence: true
+  validates :permit_url, presence: true, uniqueness: {scope: :user_id}
 
   before_create :assign_api_key
 

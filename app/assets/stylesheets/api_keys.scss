@@ -1,3 +1,17 @@
 // Place all the styles related to the api_keys controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.modal{
+  form input[type="submit"].create-api-key, form input[type="submit"].color-api-key:hover{
+    background-color: initial;
+    float: right;
+    color: black;
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+}
+
+.error-message{
+  color: rgb(248, 3, 3);
+}
