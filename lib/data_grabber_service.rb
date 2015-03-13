@@ -12,7 +12,7 @@ class DataGrabberService
 
     chunk_size = 250
     position = 0
-    SmarterCSV.process(@upload.file.path, {chunk_size: chunk_size, remove_empty_values: false}) do |chunk|
+    SmarterCSV.process(@upload.file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
       chunk.each do |hash|
         parsed = @upload.parse_data.new
         @headers.each do |type, col|
@@ -20,7 +20,7 @@ class DataGrabberService
 
           if model_column == "full_name"
             # TODO: This won't work with middle initials/names
-            name = hash[col].split(/ /)
+            name = hash[col].to_s.split(/ /)
             parsed.first_name = name[0]
             parsed.last_name = name[1]
           else

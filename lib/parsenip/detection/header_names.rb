@@ -4,7 +4,6 @@ module Parsenip
     class HeaderNames < Parsenip::Detection::Column
       def match
         split.each_with_index do |column, index|
-
           if is_first_name(column)
             @match[:is_first_name] = index
           end
@@ -22,18 +21,13 @@ module Parsenip
           end
 
         end
-
         raise Parsenip::Detection::UnmatchedColumnException unless all_matched?
+        @match
       end
 
       def all_matched?
-        total_matched = 0
-        @match.each_pair do |k, v|
-          unless @match[k].nil?
-            total_matched +=1
-          end
-        end
-        total_matched == @match.length
+        name_matched = (@match[:is_first_name] and @match[:is_last_name]) or @match[:is_full_name]
+        name_matched and @match[:is_phone] and @match[:is_email]
       end
       def is_first_name(column)
         column.downcase.match(/first.*name/)
@@ -42,10 +36,10 @@ module Parsenip
         column.downcase.match(/last.*name/)
       end
       def is_phone(column)
-        column.downcase.match(/phone.*number/)
+        column.downcase.match(/phone.*(number)?/)
       end
       def is_email(column)
-        column.downcase.match(/email/)
+        column.downcase.match(/e.?mail/)
       end
     end
   end

@@ -31,12 +31,7 @@ module Parsenip
         false
       end
       def matches_by_type(type)
-        ::Dictionary.send(type).each do |dictionary_word|
-          if @word == dictionary_word.value
-            return true
-          end
-        end
-        false
+        ::Dictionary.send(type).where({value: @word.downcase}).count > 0
       end
       def is_zipcode
         @word.match(/^[0-9]{5}(-[0-9]{4})?$/)
