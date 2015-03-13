@@ -12,8 +12,10 @@ class DataGrabberService
 
     chunk_size = 250
     position = 0
-    SmarterCSV.process(@upload.file.path, {chunk_size: chunk_size, remove_empty_values: false}) do |chunk|
+    SmarterCSV.process(@upload.file.path, {keep_original_headers: true, chunk_size: chunk_size, remove_empty_values: false}) do |chunk|
+      does_have_headers = HeaderMatch.has_headers?(chunk[0].keys)
       chunk.each do |hash|
+        puts "Has Headers: #{does_have_headers}"
         parsed = @upload.parse_data.new
         @headers.each do |type, col|
           model_column = type.to_s.gsub(/^is_/, '')
