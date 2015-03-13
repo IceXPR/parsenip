@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150306210504) do
+ActiveRecord::Schema.define(version: 20150313204429) do
 
   create_table "api_keys", force: :cascade do |t|
     t.integer  "user_id"
@@ -31,6 +31,13 @@ ActiveRecord::Schema.define(version: 20150306210504) do
   end
 
   add_index "dictionaries", ["value_type_id"], name: "index_dictionaries_on_value_type_id"
+
+  create_table "header_matches", force: :cascade do |t|
+    t.string   "value"
+    t.string   "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "parse_data", force: :cascade do |t|
     t.integer  "upload_id"
