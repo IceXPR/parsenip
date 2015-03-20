@@ -13,15 +13,22 @@ module Parsenip
         @ticker = {}
       end
       def match
+        update_rate = 10
         chunk_size = 250
         position = 0
-        SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false}) do |chunk|
+        SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
           chunk.each do |hash|
             tick(hash)
             position += 1
+            if position % update_rate == 0
+              @upload.update_progress_from_position(position)
+            end
           end
-          @upload.update_progress_from_position(position)
+          puts "Ticker #{@ticker.inspect}"
         end
+        puts "Ticker #{@ticker.inspect}"
+
+
         @ticker
       end
       def tick(hash)

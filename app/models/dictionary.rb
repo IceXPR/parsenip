@@ -16,8 +16,9 @@ class Dictionary < ActiveRecord::Base
       with_type('last_name').all
     end
 
-    def with_type(type)
-      where({ value_type_id: by_type(type).first.id })
+    def with_type(type_name)
+      type = ValueType.where(key: type_name).first
+      where({value_type: type})
     end
 
     memoize :first_names

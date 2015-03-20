@@ -7,11 +7,7 @@ class ColumnMatchService
   end
 
   def detect
-    begin
-      return detect_by_header_names
-    rescue Parsenip::Detection::UnmatchedColumnException => e
-      return detect_by_dictionary
-    end
+    detect_by_dictionary
   end
 
   def file
@@ -22,14 +18,13 @@ class ColumnMatchService
     File.open(file.path) {|f| f.readline}
   end
 
-  def detect_by_header_names
-    Parsenip::Detection::HeaderNames.new(header_row).match
-  end
-
   def detect_by_dictionary
     headers = {}
     Parsenip::Detection::Dictionary.new(@upload).match.each_pair do |key, h|
       headers[key] = h.max_by{|k,v| v}.first
+    end
+    if headers[:is_first_name] and headers[:is_last_name]
+      headers.delete :is_full_name
     end
     headers
   end
