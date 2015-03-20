@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150313204429) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "api_keys", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "key"
@@ -21,7 +24,7 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id"
+  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id", using: :btree
 
   create_table "dictionaries", force: :cascade do |t|
     t.string   "value"
@@ -30,7 +33,7 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.datetime "updated_at",    null: false
   end
 
-  add_index "dictionaries", ["value_type_id"], name: "index_dictionaries_on_value_type_id"
+  add_index "dictionaries", ["value_type_id"], name: "index_dictionaries_on_value_type_id", using: :btree
 
   create_table "header_matches", force: :cascade do |t|
     t.string   "value"
@@ -49,7 +52,7 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id"
+  add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id", using: :btree
 
   create_table "payments", force: :cascade do |t|
     t.integer  "user_id"
@@ -87,7 +90,7 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.boolean  "complete",          default: false
   end
 
-  add_index "uploads", ["user_id"], name: "index_uploads_on_user_id"
+  add_index "uploads", ["user_id"], name: "index_uploads_on_user_id", using: :btree
 
   create_table "user_plans", force: :cascade do |t|
     t.integer  "user_id"
@@ -118,8 +121,8 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.string   "secret_key"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "value_types", force: :cascade do |t|
     t.string   "key"
@@ -128,4 +131,7 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "api_keys", "users"
+  add_foreign_key "parse_data", "uploads"
+  add_foreign_key "uploads", "users"
 end

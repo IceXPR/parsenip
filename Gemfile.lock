@@ -121,18 +121,25 @@ GEM
     memoist (0.11.0)
     method_source (0.8.2)
     mime-types (2.4.3)
+    mina (0.3.1)
+      open4 (~> 1.3.4)
+      rake
+    mina-config (0.0.3)
+      mina
     mini_portile (0.6.2)
     minitest (5.5.1)
     multi_json (1.10.1)
     netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    open4 (1.3.4)
     orm_adapter (0.5.0)
     paperclip (4.2.1)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       cocaine (~> 0.5.3)
       mime-types
+    pg (0.17.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -214,7 +221,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    sqlite3 (1.3.10)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
       ref
@@ -252,7 +258,10 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   memoist
+  mina
+  mina-config
   paperclip
+  pg
   pry
   rails (= 4.2.0)
   sass-rails (~> 5.0)
@@ -262,7 +271,6 @@ DEPENDENCIES
   sinatra
   smarter_csv
   spring
-  sqlite3
   stripe!
   therubyracer
   turbolinks

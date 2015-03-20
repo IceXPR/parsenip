@@ -22,7 +22,7 @@ class HeaderMatch < ActiveRecord::Base
   end
 
   def self.does_match_value? matching_value, column
-    if (column.include?(matching_value.value))
+    if (column.to_s.include?(matching_value.value))
       found = true 
     end
   end
