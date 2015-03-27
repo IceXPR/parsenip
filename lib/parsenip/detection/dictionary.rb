@@ -30,6 +30,8 @@ module Parsenip
               return
             end
           end
+          break
+          return
           puts "Ticker #{@ticker.inspect}"
         end
         puts "Ticker #{@ticker.inspect}"
