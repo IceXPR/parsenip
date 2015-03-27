@@ -1,4 +1,3 @@
-
 module Parsenip
   module Detection
     class Dictionary < Parsenip::Detection::Column
@@ -12,6 +11,7 @@ module Parsenip
         @options = options
         @ticker = {}
       end
+
       def match
         update_rate = 10
         chunk_size = Upload.uploader_chunk_size 
@@ -28,8 +28,6 @@ module Parsenip
               break
               return
             end
-            break
-            return
           end
           break
           return
