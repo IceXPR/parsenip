@@ -23,7 +23,7 @@ class ColumnMatchService
     Parsenip::Detection::Dictionary.new(@upload).match.each_pair do |key, h|
       headers[key] = h.max_by{|k,v| v}
     end
-    if headers[:is_first_name] and headers[:is_last_name]
+    if headers[:is_first_name]
       if headers[:is_full_name].last > headers[:is_first_name].last
         headers.delete :is_first_name
         headers.delete :is_last_name
