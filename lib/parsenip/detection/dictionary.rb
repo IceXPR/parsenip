@@ -21,7 +21,13 @@ module Parsenip
             tick(hash)
             position += 1
             if position % update_rate == 0
+              puts "****Updating Progress @ #{position}***"
               @upload.update_progress_from_position(position)
+            end
+            if position == chunk_size 
+              puts 'breaking'
+              break
+              return
             end
           end
           puts "Ticker #{@ticker.inspect}"
