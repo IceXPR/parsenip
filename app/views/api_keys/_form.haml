@@ -1,4 +1,4 @@
 .error-message
 = form_for ApiKey.new do |f|
-  = f.text_field :permit_url, placeholder: "Application URL (e.g. localhost:3000, myspace.com)"
+  = f.text_field :permit_url, placeholder: "Application URL or IP (e.g. example.com:3000 or 148.202.93.12)"
   = f.submit "Create API Key", class: 'create-api-key'
