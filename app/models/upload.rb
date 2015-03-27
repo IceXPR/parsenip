@@ -12,6 +12,10 @@ class Upload < ActiveRecord::Base
     where(created_at: user_plan.last_charge_date..Time.now)
   }
 
+  def self.uploader_chunk_size
+    return 250
+  end
+
   def header_match_offset
     return 90.0
   end
@@ -34,15 +38,12 @@ class Upload < ActiveRecord::Base
   def update_progress_from_position(position)
     position = BigDecimal.new(position)
     lines = BigDecimal.new(self.lines)
-    puts "33: updating #{position} / #{lines}"
     update(progress: (((position / lines) * 100)*(header_match_offset/100)))
-    puts "**#{self.progress}**"
   end
 
   def update_progress_on_parse_data(position)
     position = BigDecimal.new(position)
     lines = BigDecimal.new(self.lines)
-    puts "40: updating #{position} / #{lines}"
     update(progress: (((position / lines) * 100) * (1 - (header_match_offset/100))) + header_match_offset)
   end
 

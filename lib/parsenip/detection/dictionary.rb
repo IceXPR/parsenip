@@ -14,7 +14,7 @@ module Parsenip
       end
       def match
         update_rate = 10
-        chunk_size = 250
+        chunk_size = Upload.uploader_chunk_size 
         position = 0
         SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
           chunk.each do |hash|
@@ -25,10 +25,11 @@ module Parsenip
               @upload.update_progress_from_position(position)
             end
             if position == chunk_size 
-              puts 'breaking'
               break
               return
             end
+            break
+            return
           end
           break
           return
