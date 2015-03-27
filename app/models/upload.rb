@@ -12,8 +12,12 @@ class Upload < ActiveRecord::Base
     where(created_at: user_plan.last_charge_date..Time.now)
   }
 
-  def set_halfway_complete
-    update(progress: 50)
+  def header_match_offset
+    return 90.0
+  end
+
+  def set_header_match_offset 
+    update(progress: header_match_offset)
   end
 
   def complete!
@@ -21,20 +25,25 @@ class Upload < ActiveRecord::Base
   end
 
   def set_number_of_lines
-    update(lines: File.foreach(file.path).count)
+    number_of_lines = File.foreach(file.path).count
+    puts "***#{number_of_lines}***"
+    update(lines: number_of_lines)
   end
 
   # Update the % and divide by 2 to make sure it doesn't surpass 50%
   def update_progress_from_position(position)
     position = BigDecimal.new(position)
     lines = BigDecimal.new(self.lines)
-    update(progress: ((position / lines) * 100) / 2)
+    puts "33: updating #{position} / #{lines}"
+    update(progress: (((position / lines) * 100)*(header_match_offset/100)))
+    puts "**#{self.progress}**"
   end
 
   def update_progress_on_parse_data(position)
     position = BigDecimal.new(position)
     lines = BigDecimal.new(self.lines)
-    update(progress: (((position / lines) * 100) / 2) + 50)
+    puts "40: updating #{position} / #{lines}"
+    update(progress: (((position / lines) * 100) * (1 - (header_match_offset/100))) + header_match_offset)
   end
 
   def percent_complete

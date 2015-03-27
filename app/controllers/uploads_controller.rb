@@ -33,7 +33,7 @@ class UploadsController < ApplicationController
     if params['upload_token']
       upload = @user.uploads.find_by(upload_token: params['upload_token'])
       if upload
-        render json: {progress: "#{upload.percent_complete}", complete: upload.complete}
+        render json: {progress: upload.progress, complete: upload.complete}
       else
         render json: {error: 'No upload matches your token and user'}
       end
