@@ -21,10 +21,18 @@ class ColumnMatchService
   def detect_by_dictionary
     headers = {}
     Parsenip::Detection::Dictionary.new(@upload).match.each_pair do |key, h|
-      headers[key] = h.max_by{|k,v| v}.first
+      headers[key] = h.max_by{|k,v| v}
     end
-    if headers[:is_first_name] and headers[:is_last_name]
-      headers.delete :is_full_name
+    if headers[:is_first_name]
+      if headers[:is_full_name].last > headers[:is_first_name].last
+        headers.delete :is_first_name
+        headers.delete :is_last_name
+      else
+        headers.delete :is_full_name
+      end
+    end
+    headers.each do |key, val|
+      headers[key] = val.first
     end
     headers
   end
