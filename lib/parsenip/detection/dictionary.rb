@@ -13,16 +13,16 @@ module Parsenip
       end
 
       def match
-        update_rate = 10
         chunk_size = 100
-        # chunk_size = Upload.uploader_chunk_size
-        position = 0
+        @upload.update_attributes(total_chunks: (BigDecimal(@upload.lines) / BigDecimal(chunk_size)).ceil)
+
         SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
           if @upload.lines < chunk_size
-            process_whole_chunk(chunk, position, update_rate)
+            process_whole_chunk(chunk)
           else
             sample_chunk(chunk)
           end
+          @upload.update_progress_from_dictionary
           puts "Ticker #{@ticker.inspect}"
         end
         puts "Ticker #{@ticker.inspect}"
@@ -41,20 +41,16 @@ module Parsenip
         end
       end
 
-      def process_whole_chunk(chunk, position, update_rate)
+      def process_whole_chunk(chunk)
         chunk.each do |line|
           tick(line)
-          position += 1
-          if position % update_rate == 0
-            puts "***Updating Progress @ #{position}"
-            @upload.update_progress_from_position(position)
-          end
         end
+        @upload.update_attributes(processed_chunks: @upload.processed_chunks += 1)
       end
 
       def sample_chunk(chunk)
         tick(chunk.sample)
-        puts "#{(chunk.size + (@upload.progress || 0))}"
+        @upload.update_attributes(processed_chunks: @upload.processed_chunks += 1)
       end
     end
   end
