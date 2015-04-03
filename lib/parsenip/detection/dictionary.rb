@@ -14,30 +14,22 @@ module Parsenip
 
       def match
         update_rate = 10
-        chunk_size = Upload.uploader_chunk_size 
+        chunk_size = 100
+        # chunk_size = Upload.uploader_chunk_size
         position = 0
         SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
-          chunk.each do |hash|
-            tick(hash)
-            position += 1
-            if position % update_rate == 0
-              puts "****Updating Progress @ #{position}***"
-              @upload.update_progress_from_position(position)
-            end
-            if position == chunk_size 
-              break
-              return
-            end
+          if @upload.lines < chunk_size
+            process_whole_chunk(chunk, position, update_rate)
+          else
+            sample_chunk(chunk)
           end
-          break
-          return
           puts "Ticker #{@ticker.inspect}"
         end
         puts "Ticker #{@ticker.inspect}"
 
-
         @ticker
       end
+
       def tick(hash)
         hash.each_pair do |key, value|
           type = Parsenip::Detection::WordMatcher.new(value).match
@@ -47,6 +39,22 @@ module Parsenip
             @ticker[type][key] += 1
           end
         end
+      end
+
+      def process_whole_chunk(chunk, position, update_rate)
+        chunk.each do |line|
+          tick(line)
+          position += 1
+          if position % update_rate == 0
+            puts "***Updating Progress @ #{position}"
+            @upload.update_progress_from_position(position)
+          end
+        end
+      end
+
+      def sample_chunk(chunk)
+        tick(chunk.sample)
+        puts "#{(chunk.size + (@upload.progress || 0))}"
       end
     end
   end
