@@ -17,7 +17,7 @@ class Upload < ActiveRecord::Base
   end
 
   def header_match_offset
-    return 90.0
+    return 50.0
   end
 
   def set_header_match_offset 
@@ -39,6 +39,16 @@ class Upload < ActiveRecord::Base
     position = BigDecimal.new(position)
     lines = BigDecimal.new(self.lines)
     update(progress: (((position / lines) * 100)*(header_match_offset/100)))
+  end
+
+  def update_progress_from_dictionary
+    percent = BigDecimal(processed_chunks) / BigDecimal(total_chunks)
+    update(progress: (percent * 100).round(0).to_i / 2)
+  end
+
+  def dictionary_percent_complete
+    percent = BigDecimal(processed_chunks) / BigDecimal(total_chunks)
+    "#{(percent * 100).round(0).to_i.to_s}%"
   end
 
   def update_progress_on_parse_data(position)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150313204429) do
+ActiveRecord::Schema.define(version: 20150403205943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(version: 20150313204429) do
     t.integer  "progress"
     t.integer  "lines"
     t.boolean  "complete",          default: false
+    t.integer  "total_chunks",      default: 0
+    t.integer  "processed_chunks",  default: 0
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id", using: :btree
