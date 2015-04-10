@@ -54,10 +54,10 @@ task :deploy => :environment do
     invoke :'rails:assets_precompile'
 
     to :launch do
-      invoke :'resque:stop'
+      #invoke :'resque:stop'
       queue "mkdir -p #{deploy_to}/#{current_path}/tmp"
       queue "touch #{deploy_to}/#{current_path}/tmp/restart.txt"
-      invoke :'resque:start'
+      #invoke :'resque:start'
     end
 
     invoke :'seed'
