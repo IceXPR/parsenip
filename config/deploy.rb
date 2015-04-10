@@ -99,17 +99,16 @@ task :'setup:db:database_yml' => :environment do
   }
 end
 
-task :'resque:stop' => :environment do
-  queue! %{
+task :'sidekiq:stop' => :environment do
+  queue %{
     echo "-----> Stopping #{rails_env} resque workers."
-    if ps -ef | awk '/resque/{print $2}' | xargs pwdx | grep #{app}; then ps -ef | awk '/resque/{print $2}' | xargs pwdx | grep #{app} | awk -F: '{print $1}' | xargs kill 2>/dev/null; fi
+    ps ax | grep sidekiq | grep "#{app}" | awk -F ' ' '{print $1}' | xargs kill -9
   }
 end
 
-task :'resque:start' => :environment do
+task :'sidekiq:start' => :environment do
   queue! %{
-    echo "-----> Starting #{rails_env} resque workers and resque scheduler with nohup."
-    cd #{deploy_to}/#{current_path} && nohup bundle exec rake resque:work RAILS_ENV=#{rails_env} BACKGROUND=yes
-    cd #{deploy_to}/#{current_path} && nohup bundle exec rake resque:scheduler RAILS_ENV=#{rails_env} BACKGROUND=yes
+    echo "-----> Starting #{rails_env} sidekiq workers and resque scheduler with nohup."
+    cd #{deploy_to}/#{current_path} && nohup bundle exec sidekiq -d -L log/sidekiq.log -C config/sidekiq.yml -e #{rails_env}
   }
 end
