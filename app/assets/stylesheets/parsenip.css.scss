@@ -94,5 +94,18 @@ table{
     td{
       font-size: 18px;
     }
+    tr:nth-of-type(even) {
+      background: white;
+    }
+    tr:nth-child(4n-1) {
+      background: #F9F9F9;
+    }
+    .javascript-container{
+      display: none;
+      font-family: "Courier New";
+      border: 40px solid #f7f7f7;
+      padding: 40px;
+    }
+
   }
 }
