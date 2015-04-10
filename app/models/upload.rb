@@ -1,6 +1,7 @@
 class Upload < ActiveRecord::Base
   belongs_to :user
   has_many :parse_data, class_name: "ParseData"
+  has_many :completed_chunks
   has_attached_file :file
 
   before_create :generate_token
@@ -26,6 +27,7 @@ class Upload < ActiveRecord::Base
 
   def complete!
     update(complete: true, progress: 100)
+    completed_chunks.destroy_all
   end
 
   def set_number_of_lines
@@ -35,26 +37,20 @@ class Upload < ActiveRecord::Base
   end
 
   # Update the % and divide by 2 to make sure it doesn't surpass 50%
-  def update_progress_from_position(position)
-    position = BigDecimal.new(position)
-    lines = BigDecimal.new(self.lines)
-    update(progress: (((position / lines) * 100)*(header_match_offset/100)))
-  end
 
   def update_progress_from_dictionary
     percent = BigDecimal(processed_chunks) / BigDecimal(total_chunks)
     update(progress: (percent * 100).round(0).to_i / 2)
   end
 
-  def dictionary_percent_complete
-    percent = BigDecimal(processed_chunks) / BigDecimal(total_chunks)
-    "#{(percent * 100).round(0).to_i.to_s}%"
-  end
+  # Update the % and divide by 2 and add 50 to show progress from 50% to 100%
 
-  def update_progress_on_parse_data(position)
-    position = BigDecimal.new(position)
-    lines = BigDecimal.new(self.lines)
-    update(progress: (((position / lines) * 100) * (1 - (header_match_offset/100))) + header_match_offset)
+  def update_progress_from_data_grabber
+    percent = BigDecimal(completed_chunks.count) / BigDecimal(total_chunks)
+    update(progress: ((percent * 100).round(0).to_i / 2) + 50)
+    if self.reload.completed_chunks.count == total_chunks
+      complete!
+    end
   end
 
   def percent_complete

@@ -3,9 +3,16 @@
     %td Permitted URL
     %td API Key
     %td
+    %td
   - current_user.api_keys.each do |api_key|
     %tr
       %td= api_key.permit_url
       %td= api_key.key
       %td
         = button_to "x", api_key, :method => :delete, class: 'delete-x'
+      %td 
+        %a.generate-javascript{href: "#", data: {id: api_key.id}} Generate Javascript 
+    %tr
+      %td{colspan: 4}
+        .javascript-container{data: {id: api_key.id}}
+          = render partial: "layouts/generate_javascript", locals: {api_key: api_key.key}, formats: [:js]

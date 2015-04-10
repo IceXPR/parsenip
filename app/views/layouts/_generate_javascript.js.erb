@@ -1,0 +1,54 @@
+//This will detect an input field with data-parsenip=true 
+<br>
+//set in the form
+<br>
+//Requires jQuery fileuploader
+<br><br>
+var upload = {
+  token: null,
+  data: function(callback) {
+    $.get('http://parsenip.agapered.com/uploads/data?upload_token='+this.token+'&api_key=<%= api_key %>', function(response){
+      callback(response);
+    });
+  },
+  progress: function(callback){
+    $.get('http://parsenip.agapered.com/uploads/progress?upload_token='+this.token+'&api_key=<%= api_key %>', function(response){
+      callback(response);
+    });
+  },
+  check_progress: function() {
+    var _this = this;
+    upload.progress(function(progress){
+      $('#upload_progress').text(progress.progress + " processed");
+      if( ! progress.complete ) {
+        setTimeout(function(){
+          _this.check_progress();
+        }, 1000);
+      }
+    });
+  },
+  save: function(callback){
+    $.post('/process_files/', {
+        process_file: {
+          token: this.token
+        }
+      }, callback(response));
+  }
+};
+
+<br>
+<br>
+
+$(function(){
+  $('form[data-parsenip=true]').fileupload({
+    dataType: 'json',
+    add: function (e, data) {
+      data.submit();
+    },
+    done: function (e, data) {
+      upload.token = data.result.upload_token;
+      upload.save(function(response){console.log(response)});
+      upload.check_progress();
+    }
+  });
+})
