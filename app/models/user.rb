@@ -4,7 +4,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  before_create :assign_secret_key
   after_create :create_user_plan
  
   has_one :user_plan
@@ -14,10 +13,6 @@ class User < ActiveRecord::Base
   has_many :api_keys
 
   private
- 
-  def assign_secret_key
-    self.secret_key = ApiAuth.generate_secret_key
-  end
 
   def create_user_plan 
     UserPlan.create(user_id: self.id) 

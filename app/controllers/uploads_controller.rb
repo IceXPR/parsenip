@@ -9,6 +9,7 @@ class UploadsController < ApplicationController
     upload = Upload.new
     upload.user = @user
     upload.file = params['file']
+    upload.callback_url = params['callback_url']
     if upload.save
       ParseFile.perform_async(upload.id)
       render json: {success: 'true', upload_token: "#{upload.upload_token}"}

@@ -20,12 +20,12 @@ class ApplicationController < ActionController::Base
   private
 
   def api_authenticate
-    secret_api_authenticate || public_api_authenticate
+    public_api_authenticate
   end
 
   def public_api_authenticate
-    if params[:api_key].present?
-      api_key = ApiKey.where({key: params[:api_key]}).first
+    if params[:js_api_key].present?
+      api_key = ApiKey.where({javascript_api_key: params[:js_api_key]}).first
       # If it's a valid api key and they requested from the permitted url, the request is valid.
       if api_key.present? and api_key.valid_request(request)
         signin_api_user(api_key.user)
@@ -50,17 +50,6 @@ class ApplicationController < ActionController::Base
       headers['Access-Control-Max-Age'] = '1728000'
 
       render :text => '', :content_type => 'text/plain'
-    end
-  end
-
-  # Attempt to authenticate with the user's secret api key.
-  def secret_api_authenticate
-    user = User.find_by_id(ApiAuth.access_id(request))
-    if ApiAuth.authentic?(request, user.try(:secret_key))
-      signin_api_user user
-      return true
-    else
-      return false
     end
   end
 

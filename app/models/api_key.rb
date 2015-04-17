@@ -11,7 +11,7 @@ class ApiKey < ActiveRecord::Base
   end
 
   def assign_api_key
-    self.key = SecureRandom.urlsafe_base64
+    self.javascript_api_key = SecureRandom.urlsafe_base64
   end
 
   def valid_request(request)

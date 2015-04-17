@@ -15,6 +15,8 @@ gem 'paperclip'
 gem 'sidekiq' 
 gem 'memoist'
 
+gem 'httparty'
+
 gem 'formtastic'
 gem 'mina'
 gem 'mina-config', require: false
@@ -30,7 +32,6 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'api-auth'
 gem 'pry'
 gem 'foundation-rails'
 
