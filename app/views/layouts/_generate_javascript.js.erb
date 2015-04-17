@@ -32,7 +32,7 @@ var upload = {
         process_file: {
           token: this.token
         }
-      }, callback(response));
+      }, callback);
   }
 };
 
@@ -40,7 +40,7 @@ var upload = {
 <br>
 
 $(function(){
-  $('form[data-parsenip=true]').fileupload({
+  $('form[data-parsenip="true"] input[type="file"]').fileupload({
     dataType: 'json',
     add: function (e, data) {
       data.submit();
