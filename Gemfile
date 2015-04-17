@@ -15,6 +15,8 @@ gem 'paperclip'
 gem 'sidekiq' 
 gem 'memoist'
 
+gem 'httparty'
+
 gem 'formtastic'
 gem 'mina'
 gem 'mina-config', require: false

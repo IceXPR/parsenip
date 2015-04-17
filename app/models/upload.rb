@@ -27,7 +27,25 @@ class Upload < ActiveRecord::Base
 
   def complete!
     update(complete: true, progress: 100)
+    queue_send_parse_data
     completed_chunks.destroy_all
+  end
+
+  def queue_send_parse_data
+    SendParseData.perform_async(id)
+  end
+
+  # Send the parse data to the callback url.
+  # This should only be called from the SendParseData background job.
+  def send_parse_data!
+    raise "No callback url provided for upload #{id}" if callback_url.blank?
+
+    HTTParty.post(callback_url, {
+        body:{
+            upload_token: upload_token,
+            data: parse_data.to_json({only: [:first_name, :last_name, :email, :phone]})
+        }
+    })
   end
 
   def set_number_of_lines

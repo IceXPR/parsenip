@@ -24,8 +24,8 @@ class ApplicationController < ActionController::Base
   end
 
   def public_api_authenticate
-    if params[:api_key].present?
-      api_key = ApiKey.where({javascript_api_key: params[:api_key]}).first
+    if params[:js_api_key].present?
+      api_key = ApiKey.where({javascript_api_key: params[:js_api_key]}).first
       # If it's a valid api key and they requested from the permitted url, the request is valid.
       if api_key.present? and api_key.valid_request(request)
         signin_api_user(api_key.user)
