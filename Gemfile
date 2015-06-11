@@ -21,6 +21,9 @@ gem 'formtastic'
 gem 'mina'
 gem 'mina-config', require: false
 
+gem "bugsnag"
+
+
 group :development do
   # for sidekiq web
   # if you require 'sinatra' you get the DSL extended to Object
