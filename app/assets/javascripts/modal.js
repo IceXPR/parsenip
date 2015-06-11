@@ -23,21 +23,7 @@ var modal = function(){
   })
 
   var postApiKey = function(){
-    $.ajax({
-      type: 'post',
-      url: '/api_keys',
-      data: $('.new_api_key').serialize()
-    }).done(function(response){
-      if(response['success']){
-        closeModal();
-        $('table').append('<tr><td>' + response['permit_url'] + 
-                          '</td><td>' + response['api_key'] + 
-                          '</td><td>' + 
-                          '</td></tr>');
-      }else{
-        $('.error-message').html(response['message']);
-      }
-    })
+    $('form#new_api_key').submit();
   }
 
   $('.create-api-key').click(function(e){

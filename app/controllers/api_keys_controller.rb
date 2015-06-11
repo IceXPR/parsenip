@@ -22,11 +22,11 @@ class ApiKeysController < ApplicationController
     @api_key = ApiKey.new(api_key_params)
     @api_key.user = current_user
     if @api_key.save
-      flash_message = t('success.create', {model: ApiKey})
-      render json: {success: true, permit_url: @api_key.permit_url, api_key: @api_key.key, message: flash_message}
+      flash[:success ] = t('success.create', {model: ApiKey})
+      redirect_to :back
     else
-      flash_message = @api_key.errors.full_messages.to_sentence
-      render json: {success: false, permit_url: params[:api_key][:permit_url], message: flash_message}
+      flash[:error] = @api_key.errors.full_messages.to_sentence
+      redirect_to :back
     end
   end
 
