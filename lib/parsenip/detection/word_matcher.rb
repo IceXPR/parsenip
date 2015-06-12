@@ -36,11 +36,24 @@ module Parsenip
       def is_zipcode
         @word.match(/^[0-9]{5}(-[0-9]{4})?$/)
       end
+      def is_date
+        @word.match(/Mon|Tue|Wed|Thu|Fri/) or
+            @word.match(/Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/) or
+            @word.match(/\d\d:\d\d/)
+      end
       def is_phone
         return false if is_zipcode
-        clean_phone = @word.gsub(/[^0-9]/, '')
+        return false if is_date
+        numbers_only = @word.gsub(/- /, '')
+        phone_characters_stripped = @word.gsub(/( x| X| #| ext).*/i, '').gsub(/[- ()]/, '')
 
-        if clean_phone.length == 7 or clean_phone.length == 10 or clean_phone.length == 11
+        # Stripping out typical phone characters doesn't make this look like the numbers-only format,
+        # then it's not a phone.  May be a lat/long or something else with lots of numbers.
+        if numbers_only != phone_characters_stripped
+          return false
+        end
+
+        if numbers_only.length == 7 or numbers_only.length == 10 or numbers_only.length == 11
           return true
         end
         false
