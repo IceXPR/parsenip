@@ -51,7 +51,6 @@ class Upload < ActiveRecord::Base
 
   def set_number_of_lines
     number_of_lines = File.foreach(file.path).count
-    puts "***#{number_of_lines}***"
     update(lines: number_of_lines)
   end
 

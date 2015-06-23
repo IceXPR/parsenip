@@ -13,8 +13,8 @@ class UploadsController < ApplicationController
     upload.callback_url = params['callback_url']
 
     if upload.save
-      matches = ColumnMatchService.new(upload).detect(self::UPLOAD_SAMPLING_SIZE)
-      sample  = upload.get_first_lines(self::UPLOAD_SAMPLING_SIZE)
+      matches = ColumnMatchService.new(upload).detect(UPLOAD_SAMPLING_SIZE)
+      sample  = upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
       render json: {success: 'true',
                     upload_token: "#{upload.upload_token}",
                     matches: matches,
