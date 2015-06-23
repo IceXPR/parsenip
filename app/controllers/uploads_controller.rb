@@ -13,6 +13,7 @@ class UploadsController < ApplicationController
     upload.callback_url = params['callback_url']
 
     if upload.save
+      upload.set_number_of_lines
       matches = ColumnMatchService.new(upload).detect(UPLOAD_SAMPLING_SIZE)
       sample  = upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
       render json: {success: 'true',

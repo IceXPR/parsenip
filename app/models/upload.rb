@@ -5,7 +5,6 @@ class Upload < ActiveRecord::Base
   has_attached_file :file
 
   before_create :generate_token
-  after_create :set_number_of_lines
 
   # TODO: we should validate against certain types, but we don't know what they are yet
   do_not_validate_attachment_file_type :file
