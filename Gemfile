@@ -23,6 +23,8 @@ gem 'mina-config', require: false
 
 gem "bugsnag"
 
+gem "newrelic_rpm"
+
 
 group :development do
   # for sidekiq web
