@@ -8,6 +8,7 @@ module Parsenip
       def match
         return if @word.nil?
         check_methods.each do |method|
+          next if @word.blank?
           if send(method)
             return method
           end
