@@ -6,9 +6,8 @@ module Parsenip
         @word = word.to_s.strip
       end
       def match
-        return if @word.nil?
+        return if @word.blank?
         check_methods.each do |method|
-          next if @word.blank?
           if send(method)
             return method
           end
