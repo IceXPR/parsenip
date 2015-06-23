@@ -5,6 +5,7 @@ class Upload < ActiveRecord::Base
   has_attached_file :file
 
   before_create :generate_token
+  after_create :set_number_of_lines
 
   # TODO: we should validate against certain types, but we don't know what they are yet
   do_not_validate_attachment_file_type :file
@@ -52,6 +53,28 @@ class Upload < ActiveRecord::Base
     number_of_lines = File.foreach(file.path).count
     puts "***#{number_of_lines}***"
     update(lines: number_of_lines)
+  end
+
+  def iterate_lines(limit)
+    chunk_size = [limit, 100, (lines/10).to_i].min
+    processed = 0
+
+    numerical_headers = ("0".."50").to_a
+    SmarterCSV.process(file.path, {headers_in_file: false, user_provided_headers: numerical_headers, chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
+      yield(chunk)
+      processed += chunk_size
+      if processed >= limit
+        return
+      end
+    end
+  end
+
+  def get_first_lines(number)
+    first = []
+    iterate_lines(number) do |chunk|
+      first += chunk
+    end
+    first
   end
 
   # Update the % and divide by 2 to make sure it doesn't surpass 50%

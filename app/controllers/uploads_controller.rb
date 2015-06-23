@@ -3,16 +3,22 @@ class UploadsController < ApplicationController
   before_filter :restrict_to_api_users
   before_filter :allow_cors
 
-  # Eventually we can implement XHR file uploads: http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
+  # How many lines should we sample immediately after the upload?
+  UPLOAD_SAMPLING_SIZE = 5
 
   def upload
     upload = Upload.new
     upload.user = @user
     upload.file = params['file']
     upload.callback_url = params['callback_url']
+
     if upload.save
-      ParseFile.perform_async(upload.id)
-      render json: {success: 'true', upload_token: "#{upload.upload_token}"}
+      matches = ColumnMatchService.new(upload).detect(self::UPLOAD_SAMPLING_SIZE)
+      sample  = upload.get_first_lines(self::UPLOAD_SAMPLING_SIZE)
+      render json: {success: 'true',
+                    upload_token: "#{upload.upload_token}",
+                    matches: matches,
+                    sample: sample }
     end
   end
 
@@ -21,7 +27,6 @@ class UploadsController < ApplicationController
     upload.user = @user
     upload.file = params['file']
     if upload.save
-      ParseFile.perform_async(upload.id)
       if params['return_url']
         redirect_to params['return_url'] + "?upload_token=#{upload.upload_token}"
       else

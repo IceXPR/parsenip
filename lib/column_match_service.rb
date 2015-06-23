@@ -6,8 +6,8 @@ class ColumnMatchService
     @upload = upload
   end
 
-  def detect
-    detect_by_dictionary
+  def detect(number_of_lines)
+    detect_by_dictionary(number_of_lines)
   end
 
   def file
@@ -18,9 +18,9 @@ class ColumnMatchService
     File.open(file.path) {|f| f.readline}
   end
 
-  def detect_by_dictionary
+  def detect_by_dictionary(number_of_lines)
     headers = {}
-    Parsenip::Detection::Dictionary.new(@upload).match.each_pair do |key, h|
+    Parsenip::Detection::Dictionary.new(@upload, {number_of_lines: number_of_lines}).match.each_pair do |key, h|
       headers[key] = h.max_by{|k,v| v}
     end
     if headers[:is_first_name] and headers[:is_last_name]
