@@ -45,7 +45,7 @@ module Parsenip
         return false if is_zipcode
         return false if is_date
         numbers_only = @word.gsub(/- /, '')
-        phone_characters_stripped = @word.gsub(/( x| X| #| ext).*/i, '').gsub(/[- ()]/, '')
+        phone_characters_stripped = @word.gsub(/( x| X| #| ext).*/i, '').gsub(/[- ()]/, '').gsub(/[a-zA-Z]/, '')
 
         # Stripping out typical phone characters doesn't make this look like the numbers-only format,
         # then it's not a phone.  May be a lat/long or something else with lots of numbers.

@@ -13,7 +13,7 @@ module Parsenip
       end
 
       def match
-        chunk_size = 100
+        chunk_size = [100, (@upload.lines/10).to_i].min
         @upload.update_attributes(total_chunks: (BigDecimal(@upload.lines) / BigDecimal(chunk_size)).ceil)
 
         SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
