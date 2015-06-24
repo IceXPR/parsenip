@@ -25,6 +25,8 @@ gem "bugsnag"
 
 gem "newrelic_rpm"
 
+gem "pusher"
+
 
 group :development do
   # for sidekiq web
