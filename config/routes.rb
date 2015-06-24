@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   match 'uploads/upload' => 'uploads#upload', as: :upload_upload, via: [:get, :post, :options]
   get 'uploads/progress' => 'uploads#progress', as: :upload_progress
   get 'uploads/data' => 'uploads#data', as: :upload_data
+  post 'uploads/confirm' => 'uploads#confirm', as: :upload_confirm
   resources :uploads
 
   root 'dashboard#index'

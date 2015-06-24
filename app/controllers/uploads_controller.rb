@@ -21,6 +21,7 @@ class UploadsController < ApplicationController
       render json: {success: 'true',
                     upload_token: "#{upload.upload_token}",
                     matches: matches,
+                    available_columns: Column.select([:id, :key, :name]),
                     sample: sample }
     end
   end
@@ -37,6 +38,24 @@ class UploadsController < ApplicationController
       end
     end
   end
+
+  def confirm
+    with_upload_token do |upload|
+      if upload.assigned_columns.count > 0
+        render json: {error: "Columns have already been assigned to this upload."}
+      end
+
+      column_confirmation_params.each_with_index do |column_key, index|
+        upload.assigned_columns.create({
+                                           column_number: index,
+                                           column: Column.find_by_key(column_key)
+                                       })
+      end
+      # TODO: Queue SendParseData
+      render json: {success: 'true'}
+    end
+  end
+
 
   def progress
     if params['upload_token']
@@ -62,6 +81,25 @@ class UploadsController < ApplicationController
     else
       render json: {error: 'Upload Token Required'}
     end
+  end
+
+  private
+  def with_upload_token
+    if params['upload_token']
+      upload = @user.uploads.find_by(upload_token: params['upload_token'])
+      if upload
+        yield(upload)
+      else
+        render json: {error: 'No upload matches your token and user'}
+      end
+    else
+      render json: {error: 'Upload Token Required'}
+    end
+  end
+
+  def column_confirmation_params
+    upload = params['upload']
+    upload['columns']
   end
 
 end
