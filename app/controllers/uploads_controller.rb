@@ -13,7 +13,9 @@ class UploadsController < ApplicationController
     upload.callback_url = params['callback_url']
 
     if upload.save
+      # todo get these lines moved somewhere else
       upload.set_number_of_lines
+      upload.set_number_of_columns
       matches = ColumnMatchService.new(upload).detect(UPLOAD_SAMPLING_SIZE)
       sample  = upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
       render json: {success: 'true',

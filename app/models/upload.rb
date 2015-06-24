@@ -13,6 +13,10 @@ class Upload < ActiveRecord::Base
     where(created_at: user_plan.last_charge_date..Time.now)
   }
 
+  def numerical_headers
+    ("0"..number_of_columns.to_s).to_a
+  end
+
   def self.uploader_chunk_size
     return 250
   end
@@ -53,17 +57,23 @@ class Upload < ActiveRecord::Base
     update(lines: number_of_lines)
   end
 
+  # Get the number of columns by counting the number of columns on the first row
+  def set_number_of_columns
+    SmarterCSV.process(file.path, {remove_empty_values: false, row_sep: :auto}) do |line|
+      return update(number_of_columns: line[0].keys.length)
+    end
+  end
+
   def iterate_lines(limit)
     chunk_size = [limit, 100, (lines/10).to_i].min
     processed = 0
 
-    numerical_headers = ("0".."50").to_a
     SmarterCSV.process(file.path, {headers_in_file: false, user_provided_headers: numerical_headers, chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
-      yield(chunk)
-      processed += chunk_size
       if processed >= limit
         return
       end
+      yield(chunk)
+      processed += chunk_size
     end
   end
 

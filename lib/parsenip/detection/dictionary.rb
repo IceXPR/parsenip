@@ -15,8 +15,6 @@ module Parsenip
       end
 
       def match
-        processed = 0
-
         @upload.iterate_lines(@options[:number_of_lines]) do |chunk|
           process_whole_chunk(chunk)
           puts "Ticker #{@ticker.inspect}"
@@ -28,7 +26,7 @@ module Parsenip
 
       def tick(hash)
         hash.each_with_index do |hashpair, column|
-          value = hashpair[1] # value is stored at 1, i.e. [:colum_name, "somevalue"] on each_with_index
+          value = hashpair[1] # value is stored at 1, i.e. [:column_name, "somevalue"] on each_with_index
           type = Parsenip::Detection::WordMatcher.new(value).match
           puts "Detected type: #{type} for value #{value}"
           if type
