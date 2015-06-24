@@ -82,8 +82,14 @@ class Upload < ActiveRecord::Base
   def get_first_lines(number)
     first = []
     iterate_lines(number) do |chunk|
-      first += chunk
+      chunk.each do |line|
+        first.push line
+        if first.length >= number
+          return first
+        end
+      end
     end
+    # It reaches this point if we requested more than the file actually has
     first
   end
 

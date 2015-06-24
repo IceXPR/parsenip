@@ -4,7 +4,8 @@ class UploadsController < ApplicationController
   before_filter :allow_cors
 
   # How many lines should we sample immediately after the upload?
-  UPLOAD_SAMPLING_SIZE = 5
+  UPLOAD_SAMPLING_SIZE = 3
+  UPLOAD_DETECTION_AMOUNT = 10
 
   def upload
     upload = Upload.new
@@ -16,7 +17,7 @@ class UploadsController < ApplicationController
       # todo get these lines moved somewhere else
       upload.set_number_of_lines
       upload.set_number_of_columns
-      matches = ColumnMatchService.new(upload).detect(UPLOAD_SAMPLING_SIZE)
+      matches = ColumnMatchService.new(upload).detect(UPLOAD_DETECTION_AMOUNT)
       sample  = upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
       render json: {success: 'true',
                     upload_token: "#{upload.upload_token}",
