@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624141540) do
+ActiveRecord::Schema.define(version: 20150624145348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,8 +72,20 @@ ActiveRecord::Schema.define(version: 20150624141540) do
     t.string   "last_name"
     t.string   "phone"
     t.string   "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "middle_initial"
+    t.string   "middle_name"
+    t.string   "full_name"
+    t.date     "birthdate"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "zipcode"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "company"
+    t.text     "notes"
   end
 
   add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id", using: :btree

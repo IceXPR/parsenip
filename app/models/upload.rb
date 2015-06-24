@@ -48,7 +48,7 @@ class Upload < ActiveRecord::Base
     HTTParty.post(callback_url, {
         body:{
             upload_token: upload_token,
-            data: parse_data.to_json({only: [:first_name, :last_name, :email, :phone]})
+            data: parse_data.to_json({only: Column.all_keys})
         }
     })
   end
@@ -65,7 +65,8 @@ class Upload < ActiveRecord::Base
     end
   end
 
-  def iterate_lines(limit)
+  def iterate_lines(limit = nil)
+    limit = lines if limit.nil?
     chunk_size = [limit, 100, (lines/10).to_i].min
     processed = 0
 

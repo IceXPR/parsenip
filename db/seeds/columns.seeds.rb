@@ -1,5 +1,9 @@
 
 
+# Generate the standard seeds that should appear on each contact
+# When changing these, you MUST add the corresponding key to the ParseData model.
+# Adding new columns will automatically reflect the new column on the confirmation step
+# on the client's application.
 columns = [
     {
         key: 'first_name',
@@ -19,7 +23,11 @@ columns = [
     },
     {
         key: 'full_name',
-        name: "Last name",
+        name: "Full name",
+    },
+    {
+        key: 'birthdate',
+        name: "Birthdate",
     },
     {
         key: 'email',
@@ -60,11 +68,7 @@ columns = [
     {
         key: 'notes',
         name: "Notes",
-    },
-    {
-        key: 'birthdate',
-        name: "Birthdate",
-    },
+    }
 ]
 
 columns.each do |c|

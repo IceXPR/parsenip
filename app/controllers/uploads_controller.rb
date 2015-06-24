@@ -51,7 +51,7 @@ class UploadsController < ApplicationController
                                            column: Column.find_by_key(column_key)
                                        })
       end
-      # TODO: Queue SendParseData
+      GatherData.perform_async(upload.id)
       render json: {success: 'true'}
     end
   end
