@@ -1,0 +1,111 @@
+.parsenip {
+  .hidden {
+    display: none;
+  }
+  min-height: 450px;
+  form.parsenip-upload {
+    padding-top: 5%;
+    width: 100%;
+    .input-container {
+      width: 100px;
+    }
+    .input-container, .spinner {
+      margin: 0 auto;
+      display: block;
+    }
+  }
+  .btn-file {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+  }
+
+
+
+
+  .spinner {
+    width: 52px;  // made a bit wider for offsetting from center
+    height: 30px;
+    position: relative; // this makes the position: absolute work on the inner element
+    .spin {
+      position: absolute;
+      top: 0;
+      left: 10px;
+
+      width: 30px;
+      height: 30px;
+
+      border-width: 2px;
+      border-style: solid;
+      border-color: #FFF #DDD #BBB #999;
+      border-radius: 40px;
+
+
+      -webkit-animation: spin 1s linear infinite;
+      -moz-animation: spin 1s linear infinite;
+    }
+
+  }
+}
+
+
+/*
+ * Confirmation results css.
+ */
+.parsenip {
+  .confirmation-results {
+    width: 100%;
+    .confirm-button {
+      float: right;
+      margin-top: 10px;
+    }
+    .spinner {
+      margin-top: 12px;
+      float: right;
+      display: block;
+    }
+    form { }
+  }
+}
+
+
+@-webkit-keyframes spin
+{
+  from { -webkit-transform: rotate(0deg); }
+  50%  { -webkit-transform: rotate(180deg); }
+  to   { -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes spin
+{
+  from { -moz-transform: rotate(0deg); }
+  50%  { -moz-transform: rotate(180deg); }
+  to   { -moz-transform: rotate(360deg); }
+}
+
+@-webkit-keyframes bounce
+{
+  from { -webkit-transform: rotate(0deg); opacity: 0.4; }
+  50%  { -webkit-transform: rotate(0deg); opacity: 1; }
+  to   { -webkit-transform: rotate(0deg); opacity: 0.4; }
+
+}
+@-moz-keyframes bounce
+{
+  from { -moz-transform: rotate(0deg); opacity: 0.6; }
+  50%  { -moz-transform: rotate(0deg); opacity: 1; }
+  to   { -moz-transform: rotate(0deg); opacity: 0.6; }
+}
