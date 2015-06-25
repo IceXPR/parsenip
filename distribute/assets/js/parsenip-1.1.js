@@ -283,6 +283,7 @@ parsenip.confirmation = {
     var $confirm = $('<input>').attr('type', 'submit').val('Confirm fields and import data').addClass('btn btn-success confirm-button');
     $form.on('submit', function(ev){
       _this.send_confirmation_data(ev);
+      _this.complete = true;
     });
     $form.append($confirm);
     $form.append(parsenip.helper.spinner.setup());
