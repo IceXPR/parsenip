@@ -7,36 +7,32 @@ module Parsenip
       attr_accessor :file
       def initialize(upload, options = {})
         @upload = upload
-        @file = @upload.file
-        @options = options
+
+        default_options = {number_of_lines: nil}
+        @options = default_options.merge(options)
+
         @ticker = {}
       end
 
       def match
-        chunk_size = [100, (@upload.lines/10).to_i].min
-        @upload.update_attributes(total_chunks: (BigDecimal(@upload.lines) / BigDecimal(chunk_size)).ceil)
-
-        SmarterCSV.process(@file.path, {chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
-          if @upload.lines < chunk_size
-            process_whole_chunk(chunk)
-          else
-            sample_chunk(chunk)
-          end
-          @upload.update_progress_from_dictionary
+        @upload.iterate_lines(@options[:number_of_lines]) do |chunk|
+          process_whole_chunk(chunk)
           puts "Ticker #{@ticker.inspect}"
         end
-        puts "Ticker #{@ticker.inspect}"
+        puts "Final Ticker #{@ticker.inspect}"
 
         @ticker
       end
 
       def tick(hash)
-        hash.each_pair do |key, value|
+        hash.each_with_index do |hashpair, column|
+          value = hashpair[1] # value is stored at 1, i.e. [:column_name, "somevalue"] on each_with_index
           type = Parsenip::Detection::WordMatcher.new(value).match
+          puts "Detected type: #{type} for value #{value}"
           if type
             @ticker[type] ||= {}
-            @ticker[type][key] ||= 0
-            @ticker[type][key] += 1
+            @ticker[type][column] ||= 0
+            @ticker[type][column] += 1
           end
         end
       end
@@ -45,13 +41,8 @@ module Parsenip
         chunk.each do |line|
           tick(line)
         end
-        @upload.update_attributes(processed_chunks: @upload.processed_chunks += 1)
       end
 
-      def sample_chunk(chunk)
-        tick(chunk.sample)
-        @upload.update_attributes(processed_chunks: @upload.processed_chunks += 1)
-      end
     end
   end
 end

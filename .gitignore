@@ -22,3 +22,7 @@ coverage
 # Ignores vim backup files
 .*.sw*
 .sass-cache
+
+config/pusher.yml
+public/js/*.js
+public/css/*.css

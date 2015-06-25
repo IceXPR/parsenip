@@ -2,6 +2,7 @@ class Upload < ActiveRecord::Base
   belongs_to :user
   has_many :parse_data, class_name: "ParseData"
   has_many :completed_chunks
+  has_many :assigned_columns
   has_attached_file :file
 
   before_create :generate_token
@@ -12,6 +13,10 @@ class Upload < ActiveRecord::Base
   scope :in_plan_range, ->(user_plan){
     where(created_at: user_plan.last_charge_date..Time.now)
   }
+
+  def numerical_headers
+    ("0"..number_of_columns.to_s).to_a
+  end
 
   def self.uploader_chunk_size
     return 250
@@ -39,19 +44,68 @@ class Upload < ActiveRecord::Base
   # This should only be called from the SendParseData background job.
   def send_parse_data!
     raise "No callback url provided for upload #{id}" if callback_url.blank?
+    raise "Parse data already sent for upload #{id}" unless data_sent.blank?
 
     HTTParty.post(callback_url, {
         body:{
             upload_token: upload_token,
-            data: parse_data.to_json({only: [:first_name, :last_name, :email, :phone]})
+            data: parse_data.to_json({only: Column.all_keys})
         }
     })
+
+    update(data_sent: DateTime.now)
   end
 
   def set_number_of_lines
     number_of_lines = File.foreach(file.path).count
-    puts "***#{number_of_lines}***"
     update(lines: number_of_lines)
+  end
+
+  # Get the number of columns by counting the number of columns on the first row
+  def set_number_of_columns
+    SmarterCSV.process(file.path, {remove_empty_values: false, row_sep: :auto}) do |line|
+      return update(number_of_columns: line[0].keys.length)
+    end
+  end
+
+  def iterate_lines(limit = nil)
+    limit = lines if limit.nil?
+    chunk_size = [limit, 100, (lines/10).to_i].min
+    processed = 0
+
+    SmarterCSV.process(file.path, {headers_in_file: false, user_provided_headers: numerical_headers, chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
+      if processed >= limit
+        return
+      end
+      yield(chunk)
+      processed += chunk_size
+    end
+  end
+
+  def detection_complete!
+    update(detection_completed: DateTime.now)
+  end
+
+  def matches
+    hash = {}
+    assigned_columns.each do |ac|
+      hash[ac.column_number] =  ac.column ? ac.column.key : nil
+    end
+    hash
+  end
+
+  def get_first_lines(number)
+    first = []
+    iterate_lines(number) do |chunk|
+      chunk.each do |line|
+        first.push line
+        if first.length >= number
+          return first
+        end
+      end
+    end
+    # It reaches this point if we requested more than the file actually has
+    first
   end
 
   # Update the % and divide by 2 to make sure it doesn't surpass 50%

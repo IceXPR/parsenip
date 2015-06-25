@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150417192836) do
+ActiveRecord::Schema.define(version: 20150625160509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,24 @@ ActiveRecord::Schema.define(version: 20150417192836) do
   end
 
   add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id", using: :btree
+
+  create_table "assigned_columns", force: :cascade do |t|
+    t.integer  "upload_id"
+    t.integer  "column_number"
+    t.integer  "column_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "assigned_columns", ["column_id"], name: "index_assigned_columns_on_column_id", using: :btree
+  add_index "assigned_columns", ["upload_id"], name: "index_assigned_columns_on_upload_id", using: :btree
+
+  create_table "columns", force: :cascade do |t|
+    t.string   "key"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "completed_chunks", force: :cascade do |t|
     t.integer  "upload_id"
@@ -54,8 +72,20 @@ ActiveRecord::Schema.define(version: 20150417192836) do
     t.string   "last_name"
     t.string   "phone"
     t.string   "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "middle_initial"
+    t.string   "middle_name"
+    t.string   "full_name"
+    t.date     "birthdate"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "zipcode"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "company"
+    t.text     "notes"
   end
 
   add_index "parse_data", ["upload_id"], name: "index_parse_data_on_upload_id", using: :btree
@@ -83,20 +113,23 @@ ActiveRecord::Schema.define(version: 20150417192836) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer  "user_id"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.string   "file_file_name"
     t.string   "file_content_type"
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
-    t.boolean  "has_header",        default: false
+    t.boolean  "has_header",          default: false
     t.string   "upload_token"
     t.integer  "progress"
     t.integer  "lines"
-    t.boolean  "complete",          default: false
-    t.integer  "total_chunks",      default: 0
-    t.integer  "processed_chunks",  default: 0
+    t.boolean  "complete",            default: false
+    t.integer  "total_chunks",        default: 0
+    t.integer  "processed_chunks",    default: 0
     t.string   "callback_url"
+    t.integer  "number_of_columns"
+    t.datetime "detection_completed"
+    t.datetime "data_sent"
   end
 
   add_index "uploads", ["user_id"], name: "index_uploads_on_user_id", using: :btree
@@ -140,6 +173,8 @@ ActiveRecord::Schema.define(version: 20150417192836) do
   end
 
   add_foreign_key "api_keys", "users"
+  add_foreign_key "assigned_columns", "columns"
+  add_foreign_key "assigned_columns", "uploads"
   add_foreign_key "parse_data", "uploads"
   add_foreign_key "uploads", "users"
 end

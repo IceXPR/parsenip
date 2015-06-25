@@ -3,16 +3,40 @@ class UploadsController < ApplicationController
   before_filter :restrict_to_api_users
   before_filter :allow_cors
 
-  # Eventually we can implement XHR file uploads: http://stackoverflow.com/questions/2320069/jquery-ajax-file-upload
+  # How many lines should we sample immediately after the upload?
+  UPLOAD_SAMPLING_SIZE = 3
 
   def upload
     upload = Upload.new
     upload.user = @user
     upload.file = params['file']
     upload.callback_url = params['callback_url']
+
     if upload.save
-      ParseFile.perform_async(upload.id)
-      render json: {success: 'true', upload_token: "#{upload.upload_token}"}
+      # todo get these lines moved somewhere else
+      upload.set_number_of_lines
+      upload.set_number_of_columns
+
+      Detect.perform_async(upload.id)
+      render json: {success: 'true',
+                    upload_token: "#{upload.upload_token}"}
+    end
+  end
+
+  def matches
+    with_upload_token do |upload|
+      unless upload.detection_completed?
+        return render json: {
+            complete: false
+        }
+      end
+
+      render json: {
+          complete: true,
+          matches: upload.matches,
+          available_columns: Column.select([:id, :key, :name]),
+          sample: upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
+      }
     end
   end
 
@@ -21,7 +45,6 @@ class UploadsController < ApplicationController
     upload.user = @user
     upload.file = params['file']
     if upload.save
-      ParseFile.perform_async(upload.id)
       if params['return_url']
         redirect_to params['return_url'] + "?upload_token=#{upload.upload_token}"
       else
@@ -29,6 +52,21 @@ class UploadsController < ApplicationController
       end
     end
   end
+
+  def confirm
+    with_upload_token do |upload|
+      upload.assigned_columns.destroy_all
+      column_confirmation_params.each_with_index do |column_key, index|
+        upload.assigned_columns.create({
+                                           column_number: index,
+                                           column: Column.find_by_key(column_key)
+                                       })
+      end
+      GatherData.perform_async(upload.id)
+      render json: {success: 'true'}
+    end
+  end
+
 
   def progress
     if params['upload_token']
@@ -54,6 +92,25 @@ class UploadsController < ApplicationController
     else
       render json: {error: 'Upload Token Required'}
     end
+  end
+
+  private
+  def with_upload_token
+    if params['upload_token']
+      upload = @user.uploads.find_by(upload_token: params['upload_token'])
+      if upload
+        yield(upload)
+      else
+        render json: {error: 'No upload matches your token and user'}
+      end
+    else
+      render json: {error: 'Upload Token Required'}
+    end
+  end
+
+  def column_confirmation_params
+    upload = params['upload']
+    upload['columns']
   end
 
 end

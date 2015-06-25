@@ -6,7 +6,7 @@ module Parsenip
         @word = word.to_s.strip
       end
       def match
-        return if @word.nil?
+        return if @word.blank?
         check_methods.each do |method|
           if send(method)
             return method
@@ -15,14 +15,14 @@ module Parsenip
         # Type not found
         nil
       end
-      def is_first_name
+      def first_name
         matches_by_type 'first_names'
       end
-      def is_last_name
+      def last_name
         matches_by_type 'last_names'
       end
       # If we find "{first_name} {any_amount_of_letters}", we'll call it a full name
-      def is_full_name
+      def full_name
         ::Dictionary.first_names.each do |first_name|
           if @word.match /^#{first_name.value} [A-Za-z]/i
             return true
@@ -33,18 +33,18 @@ module Parsenip
       def matches_by_type(type)
         ::Dictionary.send(type).where({value: @word.downcase}).count > 0
       end
-      def is_zipcode
+      def zipcode
         @word.match(/^[0-9]{5}(-[0-9]{4})?$/)
       end
-      def is_date
+      def date
         @word.match(/Mon|Tue|Wed|Thu|Fri/) or
             @word.match(/Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/) or
             @word.match(/\d\d:\d\d/)
       end
-      def is_phone
-        return false if is_zipcode
-        return false if is_date
-        numbers_only = @word.gsub(/- /, '')
+      def phone
+        return false if zipcode
+        return false if date
+        numbers_only = word.gsub(/[- \(\)]/, '')
         phone_characters_stripped = @word.gsub(/( x| X| #| ext).*/i, '').gsub(/[- ()]/, '').gsub(/[a-zA-Z]/, '')
 
         # Stripping out typical phone characters doesn't make this look like the numbers-only format,
@@ -58,13 +58,13 @@ module Parsenip
         end
         false
       end
-      def is_email
+      def email
         # Very simple email matching.
         @word.match(/\w+@\w+/)
       end
       private
       def check_methods
-        [:is_phone, :is_email, :is_first_name, :is_last_name, :is_full_name]
+        [:phone, :email, :first_name, :last_name, :full_name]
       end
     end
   end
