@@ -5,7 +5,6 @@ class UploadsController < ApplicationController
 
   # How many lines should we sample immediately after the upload?
   UPLOAD_SAMPLING_SIZE = 3
-  UPLOAD_DETECTION_AMOUNT = 10
 
   def upload
     upload = Upload.new
@@ -17,13 +16,27 @@ class UploadsController < ApplicationController
       # todo get these lines moved somewhere else
       upload.set_number_of_lines
       upload.set_number_of_columns
-      matches = ColumnMatchService.new(upload).detect(UPLOAD_DETECTION_AMOUNT)
-      sample  = upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
+
+      Detect.perform_async(upload.id)
       render json: {success: 'true',
-                    upload_token: "#{upload.upload_token}",
-                    matches: matches,
-                    available_columns: Column.select([:id, :key, :name]),
-                    sample: sample }
+                    upload_token: "#{upload.upload_token}"}
+    end
+  end
+
+  def matches
+    with_upload_token do |upload|
+      unless upload.detection_completed?
+        return render json: {
+            complete: false
+        }
+      end
+
+      render json: {
+          complete: true,
+          matches: upload.matches,
+          available_columns: Column.select([:id, :key, :name]),
+          sample: upload.get_first_lines(UPLOAD_SAMPLING_SIZE)
+      }
     end
   end
 
@@ -42,10 +55,7 @@ class UploadsController < ApplicationController
 
   def confirm
     with_upload_token do |upload|
-      if upload.assigned_columns.count > 0
-        render json: {error: "Columns have already been assigned to this upload."}
-      end
-
+      upload.assigned_columns.destroy_all
       column_confirmation_params.each_with_index do |column_key, index|
         upload.assigned_columns.create({
                                            column_number: index,

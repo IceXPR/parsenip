@@ -8,7 +8,11 @@ namespace :assets do
       name = File.basename(original)
       target = Rails.root.join('public', 'js', name).to_s
       target.gsub!(/\.js$/, '.min.js')
-      File.write(target, Uglifier.compile(File.read(original)))
+      if Rails.env.development?
+        File.write(target, File.read(original))
+      else
+        File.write(target, Uglifier.compile(File.read(original)))
+      end
       puts "[JS] Compiling #{target} from #{original}"
     end
   end

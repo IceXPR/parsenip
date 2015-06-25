@@ -33,8 +33,10 @@ var parsenip = {
       parsenip.callbacks.reset();
     });
   },
+  setup: function() { },
   initialize_all: function() {
     var _this = this;
+    this.setup();
     this.get_all_parsenip_instances().filter(':not([data-parsenip-initialized])').each(function(){
       $(this).attr('id', _this.helper.string.generate_uuid());
       $(this).addClass('parsenip');
@@ -95,6 +97,9 @@ var parsenip = {
 parsenip.url = {
   upload: function(config) {
     return config.url + '/uploads/upload.json?js_api_key=' + config.js_api_key;
+  },
+  matches: function(config, upload) {
+    return config.url + '/uploads/matches.json?js_api_key=' + config.js_api_key + '&upload_token=' + upload.token;
   },
   confirm: function(config, upload) {
     return config.url + '/uploads/confirm.json?js_api_key=' + config.js_api_key + '&upload_token=' + upload.token;
@@ -160,16 +165,20 @@ parsenip.uploader = {
     return this.$container.closest('form').find('.spinner');
   },
   finish_uploading: function(data) {
-    this.hide_spinner();
-    this.$parsenip.find('.parsenip-upload').addClass('hidden');
+    var _this = this;
     this.upload = $.extend({}, parsenip.upload);
     this.upload.token = data.result.upload_token;
-    this.show_confirmation(data);
+    this.upload.on_detection(function() {
+      _this.show_confirmation(data);
+    });
     parsenip.callbacks.upload_finished(this);
   },
-  show_confirmation: function(data) {
+  show_confirmation: function(matches, sample, available_columns) {
+    this.hide_spinner();
+    this.$parsenip.find('.parsenip-upload').addClass('hidden');
     this.confirmation = $.extend({}, parsenip.confirmation);
-    this.confirmation.init(this.$parsenip, data.result.matches, data.result.sample, data.result.available_columns, this.upload);
+    this.confirmation.init(this.$parsenip, this.upload);
+    parsenip.callbacks.show_confirmation(this.confirmation);
   },
   initialize_uploader: function() {
     var _this = this;
@@ -191,7 +200,25 @@ parsenip.uploader = {
  * Object for handling uploads (storing the token locally, etc.)
  */
 parsenip.upload = {
-  token: null
+  token: null,
+  matches: null,
+  sample: null,
+  available_columns: null,
+  on_detection: function(callback) {
+    var _this = this;
+    setTimeout(function(){
+      $.get(parsenip.url.matches(parsenip.config, _this), function(data){
+        if(data.complete) {
+          _this.matches = data.matches;
+          _this.sample = data.sample;
+          _this.available_columns = data.available_columns;
+          callback.call();
+        } else {
+          _this.on_detection(callback);
+        }
+      });
+    }, 250)
+  }
 };
 
 /*
@@ -205,13 +232,13 @@ parsenip.confirmation = {
   sample: null,
   available_columns: null,
   upload: null, // the upload object
-  init: function($parsenip, matches, sample, available_columns, upload){
+  init: function($parsenip, upload){
     this.$parsenip = $('#' + $parsenip.attr('id'));
     this.$results  = this.$parsenip.find('.confirmation-results');
-    this.matches   = matches;
-    this.sample    = sample;
     this.upload    = upload;
-    this.available_columns = available_columns;
+    this.matches   = this.upload.matches;
+    this.sample    = this.upload.sample;
+    this.available_columns = this.upload.available_columns;
     this.show_detected_data();
   },
   show_detected_data: function() {
@@ -332,7 +359,8 @@ parsenip.callbacks = {
   form_construction_complete: function($parsenip) { },
   upload_started: function(uploader) { },
   upload_finished: function(uploader) { },
-  confirmation_sent: function(uploader) {},
+  show_confirmation: function(confirmation) { },
+  confirmation_sent: function(uploader) { },
   pending_local_completion: function(upload, complete_function) {
     /*
      * Default behavior is to instantly declare completion, since there is no

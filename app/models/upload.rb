@@ -79,6 +79,18 @@ class Upload < ActiveRecord::Base
     end
   end
 
+  def detection_complete!
+    update(detection_completed: DateTime.now)
+  end
+
+  def matches
+    hash = {}
+    assigned_columns.each do |ac|
+      hash[ac.column_number] =  ac.column ? ac.column.key : nil
+    end
+    hash
+  end
+
   def get_first_lines(number)
     first = []
     iterate_lines(number) do |chunk|
