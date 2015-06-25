@@ -13,10 +13,7 @@ class UploadsController < ApplicationController
     upload.callback_url = params['callback_url']
 
     if upload.save
-      # todo get these lines moved somewhere else
-      upload.set_number_of_lines
-      upload.set_number_of_columns
-
+      upload.set_metadata!
       Detect.perform_async(upload.id)
       render json: {success: 'true',
                     upload_token: "#{upload.upload_token}"}

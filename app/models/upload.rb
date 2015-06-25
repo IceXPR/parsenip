@@ -7,6 +7,11 @@ class Upload < ActiveRecord::Base
 
   before_create :generate_token
 
+  def set_metadata!
+    set_number_of_lines
+    set_number_of_columns
+  end
+
   # TODO: we should validate against certain types, but we don't know what they are yet
   do_not_validate_attachment_file_type :file
 
