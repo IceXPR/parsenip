@@ -52,6 +52,7 @@ task :deploy => :environment do
     # queue! "RAILS_ENV=#{rails_env} bundle exec rake db:create"
     invoke :'rails:db_migrate'
     invoke :'rails:assets_precompile'
+    invoke :minify_parsenip
 
     to :launch do
       #invoke :'resque:stop'
@@ -97,6 +98,13 @@ task :'setup:db:database_yml' => :environment do
     echo "#{database_yml}" > #{deploy_to!}/shared/config/database.yml
     echo "-----> Done"
   }
+end
+
+task :minify_parsenip => :environment do
+  puts "-----> Minifying parsenip assets"
+  queue "cd #{release_path}/"
+  queue "RAILS_ENV=#{rails_env} bundle exec rake assets:minify_parsenip"
+  puts "-----> Minifying completed."
 end
 
 task :'sidekiq:stop' => :environment do
