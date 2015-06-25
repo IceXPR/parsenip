@@ -44,6 +44,7 @@ class Upload < ActiveRecord::Base
   # This should only be called from the SendParseData background job.
   def send_parse_data!
     raise "No callback url provided for upload #{id}" if callback_url.blank?
+    raise "Parse data already sent for upload #{id}" unless data_sent.blank?
 
     HTTParty.post(callback_url, {
         body:{
@@ -51,6 +52,8 @@ class Upload < ActiveRecord::Base
             data: parse_data.to_json({only: Column.all_keys})
         }
     })
+
+    update(data_sent: DateTime.now)
   end
 
   def set_number_of_lines
