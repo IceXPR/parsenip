@@ -13,8 +13,7 @@ class UploadsController < ApplicationController
     upload.callback_url = params['callback_url']
 
     if upload.save
-      upload.set_metadata!
-      Detect.perform_async(upload.id)
+      PrepareUpload.perform_async(upload.id)
       render json: {success: 'true',
                     upload_token: "#{upload.upload_token}"}
     end

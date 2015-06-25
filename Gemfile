@@ -27,6 +27,7 @@ gem "newrelic_rpm"
 
 gem "pusher"
 
+gem "roo"
 
 group :development do
   # for sidekiq web

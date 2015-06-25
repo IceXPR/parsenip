@@ -73,6 +73,15 @@ class Upload < ActiveRecord::Base
     end
   end
 
+  def convert_to_csv!
+    return if file.content_type == "text/csv"
+    spreadsheet = Roo::Spreadsheet.open(file.path)
+    target      = Rails.root.join('tmp', 'upload' + id.to_s + '.csv').to_s
+    File.write(target, spreadsheet.to_csv)
+    self.update(file: File.open(target))
+    File.unlink(target)
+  end
+
   def iterate_lines(limit = nil)
     limit = lines if limit.nil?
     chunk_size = [limit, 100, (lines/10).to_i].min
