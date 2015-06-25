@@ -3,7 +3,7 @@
 # Match data
 class Detect
   include Sidekiq::Worker
-  DETECTION_AMOUNT = 15
+  DETECTION_AMOUNT = 5
   def perform(upload_id)
     upload = Upload.find(upload_id)
     matches = ColumnMatchService.new(upload).detect(DETECTION_AMOUNT)
