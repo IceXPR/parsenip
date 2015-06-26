@@ -3,7 +3,7 @@ var parsenip = {
   has_running_instances: function() {
     var running = false;
     $.each(this.instances, function(i, instance) {
-      if(! instance.complete()){
+      if(! instance.done()){
         running = true;
       }
     });
@@ -14,6 +14,9 @@ var parsenip = {
   },
   reset: function() {
     var _this = this;
+    $.each(this.instances, function(i, instance){
+      instance.valid = false;
+    });
     this.get_all_parsenip_instances().each(function(i, parsenip_element){
       var $parsenip = $(parsenip_element);
       var $children = $parsenip.find('*');
@@ -111,10 +114,14 @@ parsenip.url = {
  * Object for setting up fileuploader on a parsenip input.
  */
 parsenip.uploader = {
+  valid: true, // If marked false, stop all future actions.
+  error: null,
   confirmation: null,
   $parsenip: null,
   $input: null,
   upload: null,
+  finished_uploading: false,
+  timer: 0,
   id: null,
   init: function($parsenip) {
     this.$parsenip = $parsenip;
@@ -122,8 +129,8 @@ parsenip.uploader = {
     this.id = $input.attr('id');
     this.watch();
   },
-  complete: function(){
-    return !!(this.confirmation && this.confirmation.complete);
+  done: function(){
+    return ( (this.confirmation && this.confirmation.complete) || this.error);
   },
   /*
    * Watch the file input until it becomes visible.
@@ -153,7 +160,24 @@ parsenip.uploader = {
     this.disable();
     this.$container.hide();
     this.show_spinner();
+    this.watch_for_timeout();
     parsenip.callbacks.upload_started(this);
+  },
+  watch_for_timeout: function(){
+    var _this = this;
+    setTimeout(function(){
+      _this.timer += 1;
+      if( _this.timer >= parsenip.config.timeout ){
+        _this.handle_timeout_error();
+      } else {
+        if( ! _this.finished_uploading ) {
+          _this.watch_for_timeout();
+        }
+      }
+    }, 1000)
+  },
+  timeout: function() {
+    parsenip.error.timeout(this);
   },
   show_spinner: function() {
     this.get_spinner().removeClass('hidden');
@@ -165,20 +189,31 @@ parsenip.uploader = {
     return this.$container.closest('form').find('.spinner');
   },
   finish_uploading: function(data) {
+    if( ! this.valid ) { return; }
     var _this = this;
     this.upload = $.extend({}, parsenip.upload);
     this.upload.token = data.result.upload_token;
     this.upload.on_detection(function() {
       _this.show_confirmation(data);
     });
+    this.finished_uploading = true;
     parsenip.callbacks.upload_finished(this);
   },
   show_confirmation: function(matches, sample, available_columns) {
+    if( ! this.valid ) { return; }
     this.hide_spinner();
     this.$parsenip.find('.parsenip-upload').addClass('hidden');
     this.confirmation = $.extend({}, parsenip.confirmation);
     this.confirmation.init(this.$parsenip, this.upload);
     parsenip.callbacks.show_confirmation(this.confirmation);
+  },
+  handle_error: function(response) {
+    this.error = true;
+    parsenip.error.upload(this);
+  },
+  handle_timeout_error: function() {
+    this.error = true;
+    parsenip.error.timeout(this);
   },
   initialize_uploader: function() {
     var _this = this;
@@ -187,7 +222,14 @@ parsenip.uploader = {
       dataType: 'json',
       add: function (e, data) {
         _this.start_uploading();
-        data.submit();
+        data.submit().error(
+          function(response){
+            _this.handle_error(_this.$parsenip);
+          }
+        );
+      },
+      fail: function (e, data) {
+        _this.handle_error(data);
       },
       done: function (e, data) {
         _this.finish_uploading(data);
@@ -373,8 +415,30 @@ parsenip.callbacks = {
   reset: function() { }
 };
 
+parsenip.error = {
+  upload: function(uploader) {
+    var $parsenip = uploader.$parsenip;
+    $parsenip.html($('<p>').text(parsenip.text.error.general));
+  },
+  timeout: function(uploader){
+    var $parsenip = uploader.$parsenip;
+    $parsenip.html($('<p>').text(parsenip.text.error.general));
+  }
+};
+
 parsenip.text = {
-  import_thankyou:  "Thank you!  Your contact data has been imported successfully."
+  import_thankyou:  "Thank you!  Your contact data has been imported successfully.",
+  error: {
+    general: "Sorry, there was an issue uploading or processing your file.  Please try again later.",
+    timeout: "Sorry, there was an issue uploading or processing your file.  Please try again later."
+  }
+};
+
+parsenip.config = {
+  js_api_key: 'your-api-key',
+  url: 'https://parsenip.agapered.com', // Default URL, can be overridden
+  callback_url: 'your-callback-url',
+  timeout: 60 // Timeout in seconds
 };
 
 $(document).on('ready page:load page:change', function() {
