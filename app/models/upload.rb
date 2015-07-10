@@ -62,7 +62,9 @@ class Upload < ActiveRecord::Base
   end
 
   def set_number_of_lines
-    number_of_lines = File.foreach(file.path).count
+    # Get the number of CSV *records*, not the number of lines in a file.
+    # This adds support for CSV records with newlines in the data.
+    number_of_lines = CSV.read(file.path).length
     update(lines: number_of_lines)
   end
 
