@@ -1,6 +1,21 @@
 == README
 Parsenip is an API-based system for intelligently importing contact information from CSV files.
 
+== Running the workers
+The workers run on sidekiq, so you will need redis installed.
+
+Once everything is setup, you can run the workers with:
+ bundle exec sidekiq -e development
+
+== Compressing JS and CSS
+After modifying the Parsenip javascript (and changing the version as needed), you should compress the files by running the following command:
+ rake assets:minify_parsenip
+
+This will create the following files (using JS version 1.1 and CSS version 1.0 as an example)
+ public/js/parsenip-1.1.min.js
+ public/css/parsenip-1.0.min.css
+
+These are the files that are referenced to obtain access to the API.
 
 == License
 MIT
