@@ -66,15 +66,62 @@ class Upload < ActiveRecord::Base
     update(lines: number_of_lines)
   end
 
+  def csv_process(options = nil, &block)
+    options ||= {}
+    default_options = {
+        row_sep: :auto
+    }
+    options = default_options.merge(options)
+
+    SmarterCSV.process(file.path, options) do |chunk_or_line|
+      yield(chunk_or_line)
+    end
+  end
+
   # Get the number of columns by counting the number of columns on the first row
   def set_number_of_columns
-    SmarterCSV.process(file.path, {remove_empty_values: false, row_sep: :auto}) do |line|
+    csv_process({remove_empty_values: false, row_sep: :auto}) do |line|
       return update(number_of_columns: line[0].keys.length)
     end
   end
 
-  def convert_to_csv!
+  # Get the current content and convert it to utf8 from the encoding it's in now
+  # This may cause memory issues for huge files...
+  def get_utf8_encoded_content
+    content = File.read(file.path)
+    CharlockHolmes::Converter.convert content, detect_encoding, 'UTF-8'
+  end
+
+  def detect_encoding
+    content = File.read(file.path)
+    detection = CharlockHolmes::EncodingDetector.detect(content)
+    detection[:encoding]
+  end
+
+  def check_and_fix_encoding!
+    fix_encoding! unless utf8_encoded?
+  end
+
+  def utf8_encoded?
+    detect_encoding == "UTF-8"
+  end
+
+  def fix_encoding!
+    target = Rails.root.join('tmp', 'upload' + id.to_s + '.csv').to_s
+
+    File.open(target, 'w+') do |target_file|
+      target_file << get_utf8_encoded_content
+    end
+    self.update(file: File.open(target))
+    File.unlink(target)
+  end
+
+  def convert_excel_to_csv!
     return if file.content_type == "text/csv"
+    convert_to_csv!
+  end
+
+  def convert_to_csv!
     spreadsheet = Roo::Spreadsheet.open(file.path)
     target      = Rails.root.join('tmp', 'upload' + id.to_s + '.csv').to_s
     File.write(target, spreadsheet.to_csv)
@@ -87,7 +134,8 @@ class Upload < ActiveRecord::Base
     chunk_size = [limit, 100, (lines/10).to_i].min
     processed = 0
 
-    SmarterCSV.process(file.path, {headers_in_file: false, user_provided_headers: numerical_headers, chunk_size: chunk_size, remove_empty_values: false, row_sep: :auto}) do |chunk|
+    csv_options = {headers_in_file: false, user_provided_headers: numerical_headers, chunk_size: chunk_size, remove_empty_values: false}
+    csv_process(csv_options) do |chunk|
       if processed >= limit
         return
       end

@@ -58,6 +58,7 @@ GEM
       slop (~> 3.6)
     celluloid (0.16.0)
       timers (~> 4.0.0)
+    charlock_holmes (0.7.3)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.5)
@@ -270,6 +271,7 @@ PLATFORMS
 DEPENDENCIES
   bugsnag
   byebug
+  charlock_holmes
   coffee-rails (~> 4.1.0)
   devise
   formtastic

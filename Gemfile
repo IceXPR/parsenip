@@ -17,6 +17,8 @@ gem 'memoist'
 
 gem 'httparty'
 
+gem 'charlock_holmes'
+
 gem 'formtastic'
 gem 'mina'
 gem 'mina-config', require: false
