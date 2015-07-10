@@ -26,3 +26,5 @@ coverage
 config/pusher.yml
 public/js/*.js
 public/css/*.css
+
+csv_test_files/*
