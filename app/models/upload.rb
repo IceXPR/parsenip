@@ -85,6 +85,16 @@ class Upload < ActiveRecord::Base
     end
   end
 
+  # Prepare the file for reading and parsing:
+  #  1. Convert excel files to csv
+  #  2. Fix any encoding issues
+  #  3. Set the metadata for the file (upload lines, etc)
+  def prepare_file!
+    convert_excel_to_csv!
+    check_and_fix_encoding!
+    set_metadata!
+  end
+
   # Get the current content and convert it to utf8 from the encoding it's in now
   # This may cause memory issues for huge files...
   def get_utf8_encoded_content
