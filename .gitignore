@@ -28,3 +28,8 @@ public/js/*.js
 public/css/*.css
 
 csv_test_files/*
+
+config/deploy.yml
+config/initializers/bugsnag.rb
+config/newrelic.yml
+config/secrets.yml
